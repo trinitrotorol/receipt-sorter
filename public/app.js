@@ -1,16 +1,37 @@
-const form = document.getElementById("cleanup-form");
 const notes = document.getElementById("raw-notes");
 const period = document.getElementById("period");
 const useCase = document.getElementById("use-case");
 const reviewRequest = document.getElementById("review-request");
 const previewButton = document.getElementById("preview-button");
+const demoButton = document.getElementById("demo-button");
 const downloadButton = document.getElementById("download-button");
-const resultBody = document.getElementById("result-body");
+const cards = document.getElementById("result-cards");
 const summary = document.getElementById("summary");
 const checklist = document.getElementById("checklist");
 const statusPill = document.getElementById("status-pill");
+const reviewCount = document.getElementById("review-count");
+const confidenceBar = document.getElementById("confidence-bar");
 
 let latestPackage = null;
+
+const demoText = [
+  "6/1 コンビニ コピー代 240円",
+  "6/2 BOOTH 売上 3,200円",
+  "Amazon 梱包材 1,180円",
+  "メルカリ 送料 750円",
+  "打ち合わせ交通費 680円"
+].join("\n");
+
+const categoryLabels = {
+  sales: "売上",
+  shipping: "発送",
+  supplies: "備品",
+  printing: "印刷",
+  travel: "交通",
+  software: "ソフト",
+  meeting: "打合せ",
+  needs_review: "要確認"
+};
 
 const expenseRules = [
   ["shipping", /送料|配送|切手|レターパック|宅急便|ゆうパック/],
@@ -68,10 +89,10 @@ function buildPackage() {
     (acc, item) => {
       if (item.type === "income") acc.income += item.amount;
       if (item.type === "expense") acc.expense += item.amount;
-      if (item.type === "unknown") acc.unknown += 1;
+      if (item.type === "unknown" || item.amount === 0) acc.review += 1;
       return acc;
     },
-    { income: 0, expense: 0, unknown: 0 }
+    { income: 0, expense: 0, review: 0 }
   );
 
   return {
@@ -89,34 +110,47 @@ function buildPackage() {
 
 function buildChecklist(items, totals) {
   const list = [];
-  if (!items.length) list.push("メモが空です。");
-  if (totals.unknown) list.push(`${totals.unknown}件はカテゴリ確認が必要です。`);
-  if (items.some((item) => item.amount === 0)) list.push("金額が読み取れない行があります。");
-  if (!period.value) list.push("対象月を入れると月次整理に使いやすくなります。");
-  if (!list.length) list.push("初期整理は完了です。証憑の保管状況を確認してください。");
+  if (!items.length) list.push("左にメモを貼って、仕分けるを押してください。");
+  if (totals.review) list.push(`${totals.review}件はカテゴリまたは金額の確認が必要です。`);
+  if (!period.value) list.push("対象月を入れると保存ファイル名と月次確認がわかりやすくなります。");
+  if (items.length && !totals.review) list.push("初期整理は完了です。証憑の保存状況だけ確認してください。");
+  list.push("会計ソフトに入れる前に、売上と経費を別々に確認してください。");
   return list;
 }
 
 function render(pkg) {
-  statusPill.textContent = pkg.reviewRequested ? "レビュー依頼用" : "プレビュー";
+  const confidence = pkg.items.length ? Math.max(0, Math.round(((pkg.items.length - pkg.totals.review) / pkg.items.length) * 100)) : 0;
+  statusPill.textContent = pkg.reviewRequested ? "レビュー用" : "整理済み";
+  reviewCount.textContent = `${pkg.totals.review}件`;
+  confidenceBar.style.width = `${confidence}%`;
   summary.innerHTML = `
-    <div class="metric"><span>売上候補</span><strong>${yen(pkg.totals.income)}</strong></div>
-    <div class="metric"><span>経費候補</span><strong>${yen(pkg.totals.expense)}</strong></div>
-    <div class="metric"><span>要確認</span><strong>${pkg.totals.unknown}件</strong></div>
+    <div class="metric income"><span>売上候補</span><strong>${yen(pkg.totals.income)}</strong></div>
+    <div class="metric expense"><span>経費候補</span><strong>${yen(pkg.totals.expense)}</strong></div>
+    <div class="metric review"><span>確認</span><strong>${pkg.totals.review}件</strong></div>
   `;
-  resultBody.innerHTML = pkg.items
-    .map(
-      (item) => `
-        <tr>
-          <td>${item.type}</td>
-          <td>${item.category}</td>
-          <td>${item.amount ? yen(item.amount) : "-"}</td>
-          <td>${escapeHtml(item.memo)}</td>
-        </tr>
-      `
-    )
-    .join("");
+  cards.innerHTML = pkg.items.length
+    ? pkg.items.map((item) => renderCard(item)).join("")
+    : `<div class="empty">メモを貼ると、ここに仕分け結果が表示されます。<br>まずはサンプルを押して試せます。</div>`;
   checklist.innerHTML = `<ul>${pkg.checklist.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+}
+
+function renderCard(item) {
+  return `
+    <article class="item-card">
+      <span class="type ${item.type}">${typeLabel(item.type)}</span>
+      <div class="memo">
+        <strong>${categoryLabels[item.category] || item.category}</strong>
+        <span>${escapeHtml(item.memo)}</span>
+      </div>
+      <div class="amount">${item.amount ? yen(item.amount) : "金額なし"}</div>
+    </article>
+  `;
+}
+
+function typeLabel(type) {
+  if (type === "income") return "売上";
+  if (type === "expense") return "経費";
+  return "確認";
 }
 
 function escapeHtml(value) {
@@ -135,15 +169,27 @@ function downloadJson(pkg) {
   URL.revokeObjectURL(url);
 }
 
-previewButton.addEventListener("click", () => {
+function runPreview() {
   latestPackage = buildPackage();
   render(latestPackage);
   downloadButton.disabled = false;
+}
+
+previewButton.addEventListener("click", runPreview);
+
+demoButton.addEventListener("click", () => {
+  notes.value = demoText;
+  if (!period.value) period.value = "2026-06";
+  runPreview();
 });
 
 downloadButton.addEventListener("click", () => {
   if (latestPackage) downloadJson(latestPackage);
 });
 
-form.addEventListener("submit", (event) => event.preventDefault());
+render({
+  totals: { income: 0, expense: 0, review: 0 },
+  items: [],
+  checklist: ["左にメモを貼って、仕分けるを押してください。"]
+});
 

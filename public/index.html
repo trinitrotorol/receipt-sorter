@@ -7,77 +7,64 @@
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
-    <main class="shell">
-      <section class="hero">
+    <main class="app-shell">
+      <header class="topbar">
         <div>
           <p class="kicker">Receipt Sorter</p>
-          <h1>副業の領収書・売上メモを、申告前に整理する</h1>
-          <p class="lead">雑に残した支出、売上、メモを貼り付けると、カテゴリ候補と確認リストをブラウザ内で作ります。</p>
+          <h1>メモを貼るだけ。副業の収支を仕分ける。</h1>
         </div>
-        <div class="price">
-          <span>初期検証価格</span>
-          <strong>980円から</strong>
-          <small>レビュー依頼は承認制</small>
+        <div class="top-actions">
+          <button type="button" id="demo-button" class="ghost">サンプル</button>
+          <button type="button" id="download-button" disabled>保存</button>
         </div>
+      </header>
+
+      <section class="flow">
+        <div class="step active"><span>1</span>貼る</div>
+        <div class="step"><span>2</span>確認</div>
+        <div class="step"><span>3</span>出力</div>
       </section>
 
-      <section class="workspace">
-        <form id="cleanup-form" class="panel">
-          <label>
-            メモ
-            <textarea id="raw-notes" rows="14" placeholder="例:
-2026/6/1 コンビニ コピー代 240円
-6/2 BOOTH 売上 3,200円
-Amazon 梱包材 1,180円
-交通費 打ち合わせ 680円"></textarea>
-          </label>
-
-          <div class="grid">
-            <label>
-              用途
-              <select id="use-case">
-                <option value="sidejob">副業</option>
-                <option value="seller">フリマ・EC販売</option>
-                <option value="freelance">個人事業</option>
-              </select>
-            </label>
-            <label>
-              対象月
-              <input id="period" type="month">
-            </label>
+      <section class="layout">
+        <aside class="capture">
+          <div class="capture-head">
+            <h2>今月のメモ</h2>
+            <span id="status-pill">未整理</span>
           </div>
-
-          <label class="checkbox">
+          <textarea id="raw-notes" rows="12" placeholder="コピー代 240
+BOOTH 売上 3200
+Amazon 梱包材 1180
+打ち合わせ交通費 680"></textarea>
+          <div class="meta-row">
+            <select id="use-case" aria-label="用途">
+              <option value="sidejob">副業</option>
+              <option value="seller">フリマ・EC販売</option>
+              <option value="freelance">個人事業</option>
+            </select>
+            <input id="period" type="month" aria-label="対象月">
+          </div>
+          <button type="button" id="preview-button" class="primary">仕分ける</button>
+          <label class="review-toggle">
             <input id="review-request" type="checkbox">
-            OpenClawレビュー依頼用パッケージも作る
+            レビュー依頼パッケージを作る
           </label>
+          <p class="notice">個人番号、カード番号、医療・給与・顧客秘密情報は入力しないでください。</p>
+        </aside>
 
-          <div class="actions">
-            <button type="button" id="preview-button">整理する</button>
-            <button type="button" id="download-button" disabled>JSONを保存</button>
+        <section class="dashboard">
+          <div class="summary" id="summary"></div>
+
+          <div class="review-strip">
+            <div>
+              <strong id="review-count">0件</strong>
+              <span>確認が必要</span>
+            </div>
+            <div class="bar"><span id="confidence-bar"></span></div>
           </div>
 
-          <p class="notice">個人番号、カード番号、医療情報、給与情報、顧客の秘密情報は入力しないでください。</p>
-        </form>
+          <div class="cards" id="result-cards"></div>
 
-        <section class="panel result">
-          <div class="result-header">
-            <h2>整理結果</h2>
-            <span id="status-pill">未実行</span>
-          </div>
-          <div id="summary" class="summary"></div>
-          <table>
-            <thead>
-              <tr>
-                <th>種類</th>
-                <th>カテゴリ</th>
-                <th>金額</th>
-                <th>メモ</th>
-              </tr>
-            </thead>
-            <tbody id="result-body"></tbody>
-          </table>
-          <div id="checklist" class="checklist"></div>
+          <div class="checklist" id="checklist"></div>
         </section>
       </section>
     </main>
@@ -85,4 +72,3 @@ Amazon 梱包材 1,180円
     <script src="./app.js"></script>
   </body>
 </html>
-
