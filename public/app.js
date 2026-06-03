@@ -1,19 +1,22 @@
 const notes = document.getElementById("raw-notes");
 const period = document.getElementById("period");
 const platform = document.getElementById("platform");
-const reviewRequest = document.getElementById("review-request");
 const previewButton = document.getElementById("preview-button");
 const demoButton = document.getElementById("demo-button");
-const csvButton = document.getElementById("csv-button");
+const startButton = document.getElementById("start-button");
 const csvButtonBottom = document.getElementById("csv-button-bottom");
 const reviewButton = document.getElementById("review-button");
 const checklistButton = document.getElementById("checklist-button");
+const dashboard = document.getElementById("dashboard");
+const dashboardTitle = document.getElementById("dashboard-title");
+const dashboardCopy = document.getElementById("dashboard-copy");
 const cards = document.getElementById("result-cards");
 const summary = document.getElementById("summary");
 const checklist = document.getElementById("checklist");
 const statusPill = document.getElementById("status-pill");
 const reviewCount = document.getElementById("review-count");
-const confidenceBar = document.getElementById("confidence-bar");
+const reviewMessage = document.getElementById("review-message");
+const reviewCopy = document.getElementById("review-copy");
 
 let latestPackage = null;
 
@@ -111,7 +114,7 @@ function buildPackage() {
     createdAt: new Date().toISOString(),
     period: period.value || null,
     platform: platform.value,
-    reviewRequested: reviewRequest.checked,
+    reviewRequested: Boolean(totals.review),
     totals,
     items: normalizedItems,
     checklist: buildChecklist(normalizedItems, totals)
@@ -156,10 +159,25 @@ function refreshPackage(pkg) {
 }
 
 function render(pkg) {
-  const confidence = pkg.items.length ? Math.max(0, Math.round(((pkg.items.length - pkg.totals.review) / pkg.items.length) * 100)) : 0;
-  statusPill.textContent = pkg.items.length ? (pkg.reviewRequested ? "レビュー用" : "整理済み") : "未整理";
+  const hasResults = pkg.items.length > 0;
+  const autoCount = Math.max(0, pkg.items.length - pkg.totals.review);
+  dashboard.classList.toggle("has-results", hasResults);
+  statusPill.textContent = hasResults ? "整理済み" : "未整理";
+  dashboardTitle.textContent = hasResults ? `${periodLabel(pkg.period)}の整理結果` : "整理結果はここに表示されます";
+  dashboardCopy.textContent = hasResults
+    ? "CSV保存前に、確認が必要な行だけ見直してください。"
+    : "販売メモを貼って「月次整理する」を押すと、売上・送料・梱包材・確認が必要な行に分けて表示します。";
   reviewCount.textContent = `${pkg.totals.review}件`;
-  confidenceBar.style.width = `${confidence}%`;
+  reviewMessage.textContent = pkg.totals.review
+    ? `自動整理できた行は${autoCount}件、確認が必要な行は${pkg.totals.review}件です。CSV保存前に確認してください。`
+    : `自動整理できた行は${autoCount}件です。レビューが必要な不明行はありません。`;
+  reviewCopy.textContent = pkg.totals.review
+    ? `自動整理で判断できなかった${pkg.totals.review}件だけをレビュー対象にできます。税務相談ではなく、販売メモの分類補助です。`
+    : "確認が必要な行がないため、レビュー依頼は不要です。";
+  reviewButton.textContent = pkg.totals.review
+    ? `不明行${pkg.totals.review}件をレビュー依頼する 980円`
+    : "レビューが必要な不明行はありません";
+  reviewButton.disabled = !hasResults || !pkg.totals.review;
   summary.innerHTML = `
     <div class="metric income"><span>売上候補</span><strong>${yen(pkg.totals.income)}</strong></div>
     <div class="metric expense"><span>経費候補</span><strong>${yen(pkg.totals.expense)}</strong></div>
@@ -169,6 +187,12 @@ function render(pkg) {
     ? pkg.items.map((item) => renderCard(item)).join("")
     : `<div class="empty">メモを貼ると、売上・経費・不明行に分かれます。<br>まずはサンプルで試せます。</div>`;
   checklist.innerHTML = `<ul>${pkg.checklist.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+}
+
+function periodLabel(value) {
+  if (!value) return "今回";
+  const [year, month] = value.split("-");
+  return `${year}年${Number(month)}月`;
 }
 
 function renderCard(item) {
@@ -311,13 +335,17 @@ function runPreview() {
 }
 
 function setExportEnabled(enabled) {
-  csvButton.disabled = !enabled;
   csvButtonBottom.disabled = !enabled;
-  reviewButton.disabled = !enabled;
+  reviewButton.disabled = !enabled || !latestPackage?.totals.review;
   checklistButton.disabled = !enabled;
 }
 
 previewButton.addEventListener("click", runPreview);
+
+startButton.addEventListener("click", () => {
+  notes.focus();
+  notes.scrollIntoView({ behavior: "smooth", block: "center" });
+});
 
 demoButton.addEventListener("click", () => {
   notes.value = demoText;
@@ -339,10 +367,6 @@ cards.addEventListener("change", (event) => {
   if (isAmount) item.amount = Number(event.target.value) || 0;
   finalizeItem(item);
   render(refreshPackage(latestPackage));
-});
-
-csvButton.addEventListener("click", () => {
-  if (latestPackage) downloadText(toCsv(latestPackage), `receipt-sorter-${latestPackage.period || "monthly"}.csv`, "text/csv");
 });
 
 csvButtonBottom.addEventListener("click", () => {

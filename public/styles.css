@@ -44,7 +44,7 @@ input {
 
 .topbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, auto);
+  grid-template-columns: minmax(0, 1fr) minmax(330px, auto);
   gap: 20px;
   align-items: start;
   padding: 10px 0 14px;
@@ -77,7 +77,7 @@ input {
 
 h1 {
   margin: 0;
-  max-width: 760px;
+  max-width: 820px;
   font-size: 37px;
   line-height: 1.16;
   letter-spacing: 0;
@@ -145,7 +145,7 @@ button:disabled {
 
 .hero-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 420px;
+  grid-template-columns: minmax(0, 1fr) 460px;
   gap: 16px;
   margin: 0 0 16px;
   border: 1px solid var(--line);
@@ -177,30 +177,45 @@ button:disabled {
   letter-spacing: 0;
 }
 
-.workflow {
+.before-after,
+.mini-before-after {
   display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.workflow li {
+.before-after div,
+.mini-before-after div {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #f9fbf7;
   padding: 12px;
 }
 
-.workflow strong,
-.workflow span {
+.before-after div:last-child,
+.mini-before-after div:last-child {
+  background: var(--sky);
+  border-color: #cedaf7;
+}
+
+.before-after strong,
+.before-after span,
+.mini-before-after strong,
+.mini-before-after span {
   display: block;
 }
 
-.workflow span {
-  margin-top: 4px;
+.before-after strong,
+.mini-before-after strong {
+  margin-bottom: 8px;
+  color: var(--green);
+}
+
+.before-after span,
+.mini-before-after span {
   color: var(--muted);
   font-size: 13px;
+  line-height: 1.55;
 }
 
 .layout {
@@ -280,6 +295,13 @@ input:focus {
   border-color: var(--teal);
 }
 
+.input-hint {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .meta-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -306,21 +328,6 @@ input {
   background: #fff;
 }
 
-.review-toggle {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  color: var(--muted);
-  font-weight: 800;
-}
-
-.review-toggle input {
-  width: 18px;
-  height: 18px;
-  min-height: 18px;
-}
-
 .notice {
   margin: 12px 0 0;
   border-left: 4px solid var(--amber);
@@ -329,6 +336,34 @@ input {
   color: var(--amber);
   font-size: 13px;
   line-height: 1.45;
+}
+
+.empty-guide {
+  min-height: 420px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: #fbfcfa;
+  padding: 18px;
+}
+
+.empty-guide h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.empty-guide ul {
+  margin: 0 0 18px;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.dashboard.has-results .empty-guide {
+  display: none;
+}
+
+.dashboard:not(.has-results) .result-only {
+  display: none;
 }
 
 .summary {
@@ -373,7 +408,7 @@ input {
 
 .review-strip {
   display: grid;
-  grid-template-columns: 150px 1fr;
+  grid-template-columns: 150px minmax(0, 1fr);
   gap: 14px;
   align-items: center;
   margin: 16px 0;
@@ -381,6 +416,12 @@ input {
   border-radius: 8px;
   padding: 12px;
   background: #fbfcfa;
+}
+
+.review-strip p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .review-strip strong,
@@ -391,21 +432,6 @@ input {
 .review-strip span {
   color: var(--muted);
   font-size: 13px;
-}
-
-.bar {
-  height: 12px;
-  border-radius: 999px;
-  overflow: hidden;
-  background: #edf1e8;
-}
-
-.bar span {
-  display: block;
-  width: 0;
-  height: 100%;
-  background: linear-gradient(90deg, var(--green), var(--blue));
-  transition: width 160ms ease;
 }
 
 .cards {
@@ -525,6 +551,30 @@ input {
   margin-top: 16px;
 }
 
+.review-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin-top: 16px;
+  border: 1px solid #e9c994;
+  border-radius: 8px;
+  background: #fffaf0;
+  padding: 14px;
+}
+
+.review-cta h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.review-cta p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .checklist {
   margin-top: 16px;
   border-radius: 8px;
@@ -618,7 +668,10 @@ input {
   .topbar,
   .layout,
   .hero-panel,
-  .sales-panel {
+  .sales-panel,
+  .before-after,
+  .mini-before-after,
+  .review-cta {
     grid-template-columns: 1fr;
   }
 
