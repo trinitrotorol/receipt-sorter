@@ -1,0 +1,9 @@
+node_modules/
+.wrangler/
+.env
+.env.*
+data/queue/*.json
+data/results/*.json
+!data/queue/.gitkeep
+!data/results/.gitkeep
+

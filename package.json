@@ -1,0 +1,12 @@
+{
+  "name": "receipt-sorter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "npx --yes serve public -l 4173",
+    "process:sample": "node scripts/process-local.mjs examples/sample-request.json",
+    "process": "node scripts/process-local.mjs"
+  }
+}
+

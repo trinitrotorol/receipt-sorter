@@ -1,0 +1,47 @@
+{
+  "app": "receipt-sorter",
+  "version": "0.1.0",
+  "createdAt": "2026-06-03T07:00:00.000Z",
+  "period": "2026-06",
+  "useCase": "seller",
+  "reviewRequested": true,
+  "totals": {
+    "income": 3200,
+    "expense": 2100,
+    "unknown": 1
+  },
+  "items": [
+    {
+      "id": "line-1",
+      "type": "expense",
+      "category": "printing",
+      "amount": 240,
+      "memo": "2026/6/1 コンビニ コピー代 240円"
+    },
+    {
+      "id": "line-2",
+      "type": "income",
+      "category": "sales",
+      "amount": 3200,
+      "memo": "6/2 BOOTH 売上 3,200円"
+    },
+    {
+      "id": "line-3",
+      "type": "expense",
+      "category": "supplies",
+      "amount": 1180,
+      "memo": "Amazon 梱包材 1,180円"
+    },
+    {
+      "id": "line-4",
+      "type": "unknown",
+      "category": "needs_review",
+      "amount": 680,
+      "memo": "交通費 打ち合わせ 680円"
+    }
+  ],
+  "checklist": [
+    "1件はカテゴリ確認が必要です。"
+  ]
+}
+
