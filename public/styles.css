@@ -439,6 +439,126 @@ input {
   gap: 10px;
 }
 
+.review-needed,
+.no-review,
+.details-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 14px;
+}
+
+.review-needed h3,
+.no-review h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.review-needed p,
+.no-review p {
+  margin: 6px 0 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.review-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid #e9c994;
+  border-radius: 8px;
+  background: #fffaf0;
+  padding: 14px;
+}
+
+.review-card + .review-card {
+  margin-top: 10px;
+}
+
+.review-card strong,
+.review-card span {
+  display: block;
+}
+
+.review-card span {
+  margin-top: 5px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.quick-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.category-chip {
+  min-height: 36px;
+  border: 1px solid #d8c095;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: var(--ink);
+  background: #fff;
+  font-size: 13px;
+}
+
+.category-chip:hover {
+  border-color: var(--green);
+  color: #fff;
+  background: var(--green);
+}
+
+.review-card details,
+.details-panel {
+  color: var(--muted);
+}
+
+.review-card summary,
+.details-panel summary {
+  cursor: pointer;
+  color: var(--green);
+  font-weight: 900;
+}
+
+.review-card details .card-fields {
+  margin-top: 10px;
+}
+
+.no-review {
+  background: var(--mint);
+}
+
+.details-panel {
+  margin-top: 10px;
+}
+
+.confirmed-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.confirmed-row {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  border: 1px solid #edf1e8;
+  border-radius: 8px;
+  background: #fbfcfa;
+  padding: 10px;
+}
+
+.confirmed-row div {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.confirmed-row span {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
 .item-card {
   display: grid;
   grid-template-columns: minmax(290px, 0.86fr) minmax(220px, 1fr);
@@ -696,6 +816,10 @@ input {
   }
 
   .card-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .confirmed-row {
     grid-template-columns: 1fr;
   }
 

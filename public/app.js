@@ -64,6 +64,16 @@ const categoryOptions = [
   ["needs_review", "要確認"]
 ];
 
+const quickReviewOptions = [
+  ["sales", "売上"],
+  ["shipping", "送料"],
+  ["supplies", "梱包材"],
+  ["fee", "手数料"],
+  ["printing", "印刷"],
+  ["travel", "交通"],
+  ["needs_review", "不明"]
+];
+
 function yen(value) {
   return new Intl.NumberFormat("ja-JP", {
     style: "currency",
@@ -184,7 +194,7 @@ function render(pkg) {
     <div class="metric review"><span>不明行</span><strong>${pkg.totals.review}件</strong></div>
   `;
   cards.innerHTML = pkg.items.length
-    ? pkg.items.map((item) => renderCard(item)).join("")
+    ? renderResults(pkg)
     : `<div class="empty">メモを貼ると、売上・経費・不明行に分かれます。<br>まずはサンプルで試せます。</div>`;
   checklist.innerHTML = `<ul>${pkg.checklist.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
@@ -195,9 +205,88 @@ function periodLabel(value) {
   return `${year}年${Number(month)}月`;
 }
 
+function needsReview(item) {
+  return item.type === "unknown" || item.amount === 0 || item.category === "needs_review";
+}
+
+function renderResults(pkg) {
+  const reviewItems = pkg.items.filter(needsReview);
+  const confirmedItems = pkg.items.filter((item) => !needsReview(item));
+  return `
+    ${reviewItems.length ? renderReviewSection(reviewItems) : renderNoReviewSection()}
+    <details class="details-panel">
+      <summary>整理済みの明細 ${confirmedItems.length}件を見る</summary>
+      <div class="confirmed-list">
+        ${confirmedItems.map((item) => renderConfirmedRow(item)).join("")}
+      </div>
+    </details>
+  `;
+}
+
+function renderReviewSection(items) {
+  return `
+    <section class="review-needed">
+      <h3>確認が必要な行</h3>
+      <p>自動では判断できなかった行です。近いものを選ぶだけで確認済みにできます。</p>
+      ${items.map((item) => renderReviewCard(item)).join("")}
+    </section>
+  `;
+}
+
+function renderNoReviewSection() {
+  return `
+    <section class="no-review">
+      <h3>確認が必要な行はありません</h3>
+      <p>CSV保存できます。売上履歴と証憑の保存状況だけ確認してください。</p>
+    </section>
+  `;
+}
+
+function renderReviewCard(item) {
+  return `
+    <article class="review-card" data-id="${item.id}">
+      <div>
+        <strong>${item.amount ? yen(item.amount) : "金額なし"}</strong>
+        <span>${escapeHtml(item.memo)}</span>
+      </div>
+      <div class="quick-options" aria-label="分類候補">
+        ${quickReviewOptions.map(([value, label]) => `<button type="button" class="category-chip" data-category="${value}">${label}</button>`).join("")}
+      </div>
+      <details>
+        <summary>詳細を編集</summary>
+        ${renderEditFields(item)}
+      </details>
+    </article>
+  `;
+}
+
+function renderConfirmedRow(item) {
+  return `
+    <article class="confirmed-row" data-id="${item.id}">
+      <div>
+        <em class="type ${item.type}">${typeLabel(item.type)}</em>
+        <strong>${item.amount ? yen(item.amount) : "金額なし"}</strong>
+      </div>
+      <span>${escapeHtml(item.memo)}</span>
+    </article>
+  `;
+}
+
 function renderCard(item) {
   return `
     <article class="item-card" data-id="${item.id}">
+      ${renderEditFields(item)}
+      <div class="memo">
+        <strong>${item.amount ? yen(item.amount) : "金額なし"}</strong>
+        <em class="type ${item.type}">${typeLabel(item.type)}</em>
+        <span>${escapeHtml(item.memo)}</span>
+      </div>
+    </article>
+  `;
+}
+
+function renderEditFields(item) {
+  return `
       <div class="card-fields">
         <label>
           <span>種類</span>
@@ -218,12 +307,6 @@ function renderCard(item) {
           <input class="amount-input" type="number" min="0" step="1" inputmode="numeric" value="${item.amount || ""}" aria-label="金額">
         </label>
       </div>
-      <div class="memo">
-        <strong>${item.amount ? yen(item.amount) : "金額なし"}</strong>
-        <em class="type ${item.type}">${typeLabel(item.type)}</em>
-        <span>${escapeHtml(item.memo)}</span>
-      </div>
-    </article>
   `;
 }
 
@@ -365,6 +448,16 @@ cards.addEventListener("change", (event) => {
   if (isCategory) setTypeFromCategory(item, event.target.value);
   if (isType) setCategoryFromType(item, event.target.value);
   if (isAmount) item.amount = Number(event.target.value) || 0;
+  finalizeItem(item);
+  render(refreshPackage(latestPackage));
+});
+
+cards.addEventListener("click", (event) => {
+  if (!latestPackage || !event.target.classList.contains("category-chip")) return;
+  const card = event.target.closest("[data-id]");
+  const item = latestPackage.items.find((candidate) => candidate.id === card.dataset.id);
+  if (!item) return;
+  setTypeFromCategory(item, event.target.dataset.category);
   finalizeItem(item);
   render(refreshPackage(latestPackage));
 });
