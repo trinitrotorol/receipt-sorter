@@ -7,13 +7,25 @@
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a class="site-brand" href="./index.html" aria-label="フリマ月次メモ整理">
+          <span class="brand-mark compact">RS</span>
+          <span>フリマ月次メモ整理</span>
+        </a>
+        <nav class="site-nav" aria-label="ページ内ナビゲーション">
+          <a href="#what-it-is">できること</a>
+          <a href="#try-flow">試し方</a>
+          <a href="#scope">対象範囲</a>
+        </nav>
+        <a class="button-link header-cta" href="./app.html">無料デモ</a>
+      </div>
+    </header>
+
     <main class="landing-shell">
       <header class="landing-hero">
         <nav class="landing-nav" aria-label="Receipt Sorter">
-          <a class="landing-brand" href="./index.html" aria-label="Receipt Sorter landing">
-            <span class="brand-mark">RS</span>
-            <span>フリマ月次メモ整理</span>
-          </a>
+          <p class="landing-status">無料デモ公開中</p>
           <div class="landing-nav-actions">
             <a class="text-link" href="./app.html">デモを開く</a>
             <a class="button-link" href="./app.html">無料で試す</a>
@@ -75,7 +87,7 @@
         </section>
       </header>
 
-      <section class="landing-section">
+      <section class="landing-section" id="what-it-is">
         <div class="section-head compact">
           <div>
             <p class="step-label">WHAT IT IS</p>
@@ -98,7 +110,7 @@
         </div>
       </section>
 
-      <section class="landing-section">
+      <section class="landing-section" id="try-flow">
         <div class="section-head compact">
           <div>
             <p class="step-label">TRY FLOW</p>
@@ -124,7 +136,7 @@
         </div>
       </section>
 
-      <section class="landing-section">
+      <section class="landing-section" id="scope">
         <div class="section-head compact">
           <div>
             <p class="step-label">SCOPE</p>
