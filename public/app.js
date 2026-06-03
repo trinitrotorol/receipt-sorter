@@ -103,15 +103,7 @@ function parseNotes(raw) {
 function buildPackage() {
   const items = parseNotes(notes.value);
   const normalizedItems = normalizeItems(items);
-  const totals = items.reduce(
-    (acc, item) => {
-      if (item.type === "income") acc.income += item.amount;
-      if (item.type === "expense") acc.expense += item.amount;
-      if (item.type === "unknown" || item.amount === 0) acc.review += 1;
-      return acc;
-    },
-    { income: 0, expense: 0, review: 0 }
-  );
+  const totals = calculateTotals(normalizedItems);
 
   return {
     app: "receipt-sorter",
@@ -122,7 +114,7 @@ function buildPackage() {
     reviewRequested: reviewRequest.checked,
     totals,
     items: normalizedItems,
-    checklist: buildChecklist(items, totals)
+    checklist: buildChecklist(normalizedItems, totals)
   };
 }
 
@@ -136,42 +128,77 @@ function normalizeItems(items) {
 
 function buildChecklist(items, totals) {
   const list = [];
-  if (!items.length) list.push("左にメモを貼って、仕分けるを押してください。");
-  if (totals.review) list.push(`${totals.review}件はカテゴリまたは金額の確認が必要です。`);
+  if (!items.length) list.push("左にメモを貼って、月次整理を作るを押してください。");
+  if (totals.review) list.push(`${totals.review}件はカテゴリまたは金額だけ確認してください。`);
   if (!period.value) list.push("対象月を入れると保存ファイル名と月次確認がわかりやすくなります。");
-  if (items.length && !totals.review) list.push("初期整理は完了です。証憑の保存状況だけ確認してください。");
+  if (items.length && !totals.review) list.push("下ごしらえは完了です。売上履歴と証憑の保存状況だけ確認してください。");
   list.push("メルカリ/BOOTHの売上履歴と、送料・梱包材の証憑を照合してください。");
   list.push("税務判断ではなく、月次整理の補助として使ってください。");
   return list;
 }
 
+function calculateTotals(items) {
+  return items.reduce(
+    (acc, item) => {
+      if (item.type === "income") acc.income += item.amount;
+      if (item.type === "expense") acc.expense += item.amount;
+      if (item.type === "unknown" || item.amount === 0) acc.review += 1;
+      return acc;
+    },
+    { income: 0, expense: 0, review: 0 }
+  );
+}
+
+function refreshPackage(pkg) {
+  pkg.totals = calculateTotals(pkg.items);
+  pkg.checklist = buildChecklist(pkg.items, pkg.totals);
+  return pkg;
+}
+
 function render(pkg) {
   const confidence = pkg.items.length ? Math.max(0, Math.round(((pkg.items.length - pkg.totals.review) / pkg.items.length) * 100)) : 0;
-  statusPill.textContent = pkg.reviewRequested ? "レビュー用" : "整理済み";
+  statusPill.textContent = pkg.items.length ? (pkg.reviewRequested ? "レビュー用" : "整理済み") : "未整理";
   reviewCount.textContent = `${pkg.totals.review}件`;
   confidenceBar.style.width = `${confidence}%`;
   summary.innerHTML = `
     <div class="metric income"><span>売上候補</span><strong>${yen(pkg.totals.income)}</strong></div>
     <div class="metric expense"><span>経費候補</span><strong>${yen(pkg.totals.expense)}</strong></div>
-    <div class="metric review"><span>確認</span><strong>${pkg.totals.review}件</strong></div>
+    <div class="metric review"><span>不明行</span><strong>${pkg.totals.review}件</strong></div>
   `;
   cards.innerHTML = pkg.items.length
     ? pkg.items.map((item) => renderCard(item)).join("")
-    : `<div class="empty">メモを貼ると、ここに仕分け結果が表示されます。<br>まずはサンプルを押して試せます。</div>`;
+    : `<div class="empty">メモを貼ると、売上・経費・不明行に分かれます。<br>まずはサンプルで試せます。</div>`;
   checklist.innerHTML = `<ul>${pkg.checklist.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
 function renderCard(item) {
   return `
     <article class="item-card" data-id="${item.id}">
-      <span class="type ${item.type}">${typeLabel(item.type)}</span>
+      <div class="card-fields">
+        <label>
+          <span>種類</span>
+          <select class="type-select ${item.type}" aria-label="種類">
+            <option value="income" ${item.type === "income" ? "selected" : ""}>売上</option>
+            <option value="expense" ${item.type === "expense" ? "selected" : ""}>経費</option>
+            <option value="unknown" ${item.type === "unknown" ? "selected" : ""}>確認</option>
+          </select>
+        </label>
+        <label>
+          <span>カテゴリ</span>
+          <select class="category-select" aria-label="カテゴリ">
+            ${categoryOptions.map(([value, label]) => `<option value="${value}" ${value === item.category ? "selected" : ""}>${label}</option>`).join("")}
+          </select>
+        </label>
+        <label>
+          <span>金額</span>
+          <input class="amount-input" type="number" min="0" step="1" inputmode="numeric" value="${item.amount || ""}" aria-label="金額">
+        </label>
+      </div>
       <div class="memo">
-        <select class="category-select" aria-label="カテゴリ">
-          ${categoryOptions.map(([value, label]) => `<option value="${value}" ${value === item.category ? "selected" : ""}>${label}</option>`).join("")}
-        </select>
+        <strong>${item.amount ? yen(item.amount) : "金額なし"}</strong>
+        <em class="type ${item.type}">${typeLabel(item.type)}</em>
         <span>${escapeHtml(item.memo)}</span>
       </div>
-      <div class="amount">${item.amount ? yen(item.amount) : "金額なし"}</div>
     </article>
   `;
 }
@@ -231,6 +258,9 @@ function toChecklist(pkg) {
     `Receipt Sorter 確認リスト`,
     `対象月: ${pkg.period || "未指定"}`,
     `販路: ${pkg.platform || "未指定"}`,
+    `売上候補: ${yen(pkg.totals.income)}`,
+    `経費候補: ${yen(pkg.totals.expense)}`,
+    `確認が必要: ${pkg.totals.review}件`,
     "",
     ...pkg.checklist.map((item) => `- ${item}`),
     "",
@@ -240,6 +270,38 @@ function toChecklist(pkg) {
       .map((item) => `- ${item.memo}`)
   ];
   return lines.join("\n") + "\n";
+}
+
+async function copyChecklist(pkg) {
+  const text = toChecklist(pkg);
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return "copied";
+  }
+  downloadText(text, `receipt-sorter-${pkg.period || "checklist"}.txt`);
+  return "downloaded";
+}
+
+function setTypeFromCategory(item, category) {
+  item.category = category;
+  if (category === "sales") item.type = "income";
+  if (category !== "sales" && category !== "needs_review") item.type = "expense";
+  if (category === "needs_review") item.type = "unknown";
+}
+
+function setCategoryFromType(item, type) {
+  item.type = type;
+  if (type === "income") item.category = "sales";
+  if (type === "unknown") item.category = "needs_review";
+  if (type === "expense" && (item.category === "sales" || item.category === "needs_review")) {
+    item.category = "supplies";
+  }
+}
+
+function finalizeItem(item) {
+  item.amount = Number.isFinite(item.amount) ? Math.max(0, Math.round(item.amount)) : 0;
+  item.exportColumn = item.type === "income" ? "income" : "expense";
+  item.note = item.type === "unknown" || item.amount === 0 ? "確認が必要" : "";
 }
 
 function runPreview() {
@@ -264,27 +326,19 @@ demoButton.addEventListener("click", () => {
 });
 
 cards.addEventListener("change", (event) => {
-  if (!event.target.classList.contains("category-select") || !latestPackage) return;
+  if (!latestPackage) return;
+  const isCategory = event.target.classList.contains("category-select");
+  const isType = event.target.classList.contains("type-select");
+  const isAmount = event.target.classList.contains("amount-input");
+  if (!isCategory && !isType && !isAmount) return;
   const card = event.target.closest(".item-card");
   const item = latestPackage.items.find((candidate) => candidate.id === card.dataset.id);
   if (!item) return;
-  item.category = event.target.value;
-  if (item.category === "sales") item.type = "income";
-  if (item.category !== "sales" && item.category !== "needs_review") item.type = "expense";
-  if (item.category === "needs_review") item.type = "unknown";
-  item.exportColumn = item.type === "income" ? "income" : "expense";
-  item.note = item.type === "unknown" || item.amount === 0 ? "確認が必要" : "";
-  latestPackage.totals = latestPackage.items.reduce(
-    (acc, current) => {
-      if (current.type === "income") acc.income += current.amount;
-      if (current.type === "expense") acc.expense += current.amount;
-      if (current.type === "unknown" || current.amount === 0) acc.review += 1;
-      return acc;
-    },
-    { income: 0, expense: 0, review: 0 }
-  );
-  latestPackage.checklist = buildChecklist(latestPackage.items, latestPackage.totals);
-  render(latestPackage);
+  if (isCategory) setTypeFromCategory(item, event.target.value);
+  if (isType) setCategoryFromType(item, event.target.value);
+  if (isAmount) item.amount = Number(event.target.value) || 0;
+  finalizeItem(item);
+  render(refreshPackage(latestPackage));
 });
 
 csvButton.addEventListener("click", () => {
@@ -295,8 +349,19 @@ csvButtonBottom.addEventListener("click", () => {
   if (latestPackage) downloadText(toCsv(latestPackage), `receipt-sorter-${latestPackage.period || "monthly"}.csv`, "text/csv");
 });
 
-checklistButton.addEventListener("click", () => {
-  if (latestPackage) downloadText(toChecklist(latestPackage), `receipt-sorter-${latestPackage.period || "checklist"}.txt`);
+checklistButton.addEventListener("click", async () => {
+  if (!latestPackage) return;
+  const previousLabel = checklistButton.textContent;
+  try {
+    const result = await copyChecklist(latestPackage);
+    checklistButton.textContent = result === "copied" ? "コピー済み" : "TXT保存";
+  } catch {
+    downloadText(toChecklist(latestPackage), `receipt-sorter-${latestPackage.period || "checklist"}.txt`);
+    checklistButton.textContent = "TXT保存";
+  }
+  window.setTimeout(() => {
+    checklistButton.textContent = previousLabel;
+  }, 1200);
 });
 
 reviewButton.addEventListener("click", () => {
@@ -306,6 +371,6 @@ reviewButton.addEventListener("click", () => {
 render({
   totals: { income: 0, expense: 0, review: 0 },
   items: [],
-  checklist: ["左にメモを貼って、仕分けるを押してください。"]
+  checklist: ["左にメモを貼って、月次整理を作るを押してください。"]
 });
 setExportEnabled(false);

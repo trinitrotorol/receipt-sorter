@@ -13,28 +13,37 @@
           <span class="brand-mark">RS</span>
           <div>
             <p class="kicker">Receipt Sorter</p>
-            <h1>メルカリ・BOOTH販売の月末整理を、10分で下ごしらえ。</h1>
+            <h1>月末の販売メモを、会計前の確認リストにする。</h1>
+            <p class="lead">メルカリ・BOOTHの売上、送料、梱包材を貼るだけ。不明行だけ見直して、必要なら980円でレビュー依頼できます。</p>
           </div>
         </div>
-        <div class="top-actions" aria-label="出力">
-          <button type="button" id="demo-button" class="ghost">サンプル</button>
-          <button type="button" id="csv-button" disabled>CSV</button>
-          <button type="button" id="review-button" disabled>レビュー依頼</button>
+        <div class="top-actions" aria-label="試用と出力">
+          <button type="button" id="demo-button" class="ghost">サンプルで試す</button>
+          <button type="button" id="csv-button" disabled>CSV保存</button>
+          <button type="button" id="review-button" disabled>980円レビュー</button>
         </div>
       </header>
 
-      <section class="status-line">
-        <div><strong>対象</strong><span>メルカリ / BOOTH / 小規模物販</span></div>
-        <div><strong>出力</strong><span>月次CSV・確認リスト</span></div>
-        <div><strong>レビュー</strong><span>不明行だけ 980円</span></div>
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">小規模販売者の月次整理</p>
+          <h2>売上履歴と経費メモが散らかったままでも、まず分類できます。</h2>
+          <p>税務判断ではなく、会計ソフトに入れる前の下ごしらえです。OCRもAI APIも使わないので、使うたびに維持費が膨らむ設計ではありません。</p>
+        </div>
+        <ol class="workflow">
+          <li><strong>1. 貼る</strong><span>売上、送料、梱包材をそのまま入力</span></li>
+          <li><strong>2. 仕分け</strong><span>売上・発送・備品などに仮分類</span></li>
+          <li><strong>3. 確認</strong><span>不明行だけ直してCSVかレビュー依頼</span></li>
+        </ol>
       </section>
 
       <section class="layout">
         <aside class="capture">
           <div class="section-head">
             <div>
-              <h2>販売メモ</h2>
-              <p>売上、送料、梱包材、印刷代をそのまま貼り付けます。</p>
+              <p class="step-label">STEP 1</p>
+              <h2>散らかった販売メモを貼る</h2>
+              <p>1行1件で十分です。日付やショップ名が混ざっていても構いません。</p>
             </div>
             <span id="status-pill">未整理</span>
           </div>
@@ -44,18 +53,24 @@ BOOTH 売上 3200
 梱包材 1180
 コピー代 240"></textarea>
           <div class="meta-row">
-            <select id="platform" aria-label="販路">
+            <label>
+              <span>販路</span>
+              <select id="platform" aria-label="販路">
               <option value="mercari-booth">メルカリ + BOOTH</option>
               <option value="mercari">メルカリ</option>
               <option value="booth">BOOTH</option>
               <option value="other">その他</option>
-            </select>
-            <input id="period" type="month" aria-label="対象月">
+              </select>
+            </label>
+            <label>
+              <span>対象月</span>
+              <input id="period" type="month" aria-label="対象月">
+            </label>
           </div>
-          <button type="button" id="preview-button" class="primary">仕分ける</button>
+          <button type="button" id="preview-button" class="primary">月次整理を作る</button>
           <label class="review-toggle">
             <input id="review-request" type="checkbox">
-            レビュー依頼パッケージを作る
+            不明行レビュー依頼も作る
           </label>
           <p class="notice">個人番号、カード番号、医療・給与・顧客秘密情報は入力しないでください。</p>
         </aside>
@@ -63,10 +78,11 @@ BOOTH 売上 3200
         <section class="dashboard">
           <div class="section-head">
             <div>
-              <h2>月次整理</h2>
-              <p>会計ソフトに入れる前の確認用です。税務判断は行いません。</p>
+              <p class="step-label">STEP 2</p>
+              <h2>確認ダッシュボード</h2>
+              <p>まず不明行を減らします。全部を完璧に自動判定する画面ではありません。</p>
             </div>
-            <span class="price-chip">レビュー 980円</span>
+            <span class="price-chip">不明行レビュー 980円</span>
           </div>
 
           <div class="summary" id="summary"></div>
@@ -82,18 +98,32 @@ BOOTH 売上 3200
           <div class="cards" id="result-cards"></div>
 
           <div class="export-panel">
-            <button type="button" id="checklist-button" class="ghost" disabled>確認リスト</button>
-            <button type="button" id="csv-button-bottom" disabled>月次CSV</button>
+            <button type="button" id="checklist-button" class="ghost" disabled>確認リストをコピー</button>
+            <button type="button" id="csv-button-bottom" disabled>月次CSV保存</button>
           </div>
 
           <div class="checklist" id="checklist"></div>
         </section>
       </section>
 
+      <section class="sales-panel">
+        <div>
+          <p class="eyebrow">販売導線</p>
+          <h2>無料で仕分け、不明行だけ980円で人力レビュー。</h2>
+          <p>月3万円には約31件のレビュー依頼が必要です。まずは「同人販売・フリマ販売の月末整理」に絞って、レビュー依頼率を見る設計にします。</p>
+        </div>
+        <div class="price-box">
+          <strong>980円</strong>
+          <span>不明行レビュー依頼</span>
+          <small>CSVと確認リストは無料試用。レビュー送信は承認後に外部導線化。</small>
+        </div>
+      </section>
+
       <section class="proof-strip">
-        <span>データは初期状態ではブラウザ内処理</span>
-        <span>OCRなし・AI API費用なし</span>
-        <span>不明行だけレビュー対象</span>
+        <span>ブラウザ内で仮処理</span>
+        <span>OCRなし</span>
+        <span>AI API費用なし</span>
+        <span>税務判断なし</span>
       </section>
     </main>
 

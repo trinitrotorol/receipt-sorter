@@ -13,6 +13,8 @@ Use Cloudflare because requirements are lighter than Google Play or Apple App St
 ## Current MVP Scope
 
 - Browser-side cleanup preview.
+- Editable review cards for type, category, and amount correction.
+- Copyable monthly confirmation checklist.
 - JSON export.
 - Worker queue source for future OpenClaw review.
 - No file uploads.
@@ -36,10 +38,10 @@ Initial pricing hypothesis:
 
 ## Next Build Step
 
-Add editable review cards before backend submission:
+Prepare launch/acquisition material before backend submission:
 
-- Type/category correction.
-- Amount correction.
-- Copyable monthly confirmation checklist.
+- One-page landing copy for JPY 1,980 beta/lifetime purchase.
+- Short demo script using synthetic Mercari/BOOTH notes.
+- List of 10 distribution targets or communities where posting can be reviewed by the owner.
 
 Backend submission should wait until there is an approved route and a clear paid-review model.
