@@ -479,6 +479,12 @@ input {
   display: block;
 }
 
+.review-question {
+  margin: 0 0 8px;
+  color: var(--green);
+  font-weight: 900;
+}
+
 .review-card span {
   margin-top: 5px;
   color: var(--muted);

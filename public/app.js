@@ -65,13 +65,13 @@ const categoryOptions = [
 ];
 
 const quickReviewOptions = [
-  ["sales", "売上"],
-  ["shipping", "送料"],
-  ["supplies", "梱包材"],
-  ["fee", "手数料"],
-  ["printing", "印刷"],
-  ["travel", "交通"],
-  ["needs_review", "不明"]
+  ["sales", "売上にする"],
+  ["shipping", "送料にする"],
+  ["supplies", "梱包材にする"],
+  ["fee", "手数料にする"],
+  ["printing", "印刷代にする"],
+  ["travel", "交通費にする"],
+  ["needs_review", "あとで確認"]
 ];
 
 function yen(value) {
@@ -173,29 +173,31 @@ function render(pkg) {
   const autoCount = Math.max(0, pkg.items.length - pkg.totals.review);
   dashboard.classList.toggle("has-results", hasResults);
   statusPill.textContent = hasResults ? "整理済み" : "未整理";
-  dashboardTitle.textContent = hasResults ? `${periodLabel(pkg.period)}の整理結果` : "整理結果はここに表示されます";
+  dashboardTitle.textContent = hasResults
+    ? (pkg.totals.review ? `あと${pkg.totals.review}件確認すれば、月次CSVを保存できます。` : `${periodLabel(pkg.period)}の整理は完了です`)
+    : "整理結果はここに表示されます";
   dashboardCopy.textContent = hasResults
-    ? "CSV保存前に、確認が必要な行だけ見直してください。"
-    : "販売メモを貼って「月次整理する」を押すと、売上・送料・梱包材・確認が必要な行に分けて表示します。";
+    ? "確認が必要なメモだけ見直してください。整理済みの明細は折りたたんで確認できます。"
+    : "販売メモを貼って「月次整理する」を押すと、売上メモ・経費メモ・確認が必要なメモに分けて表示します。";
   reviewCount.textContent = `${pkg.totals.review}件`;
   reviewMessage.textContent = pkg.totals.review
-    ? `自動整理できた行は${autoCount}件、確認が必要な行は${pkg.totals.review}件です。CSV保存前に確認してください。`
-    : `自動整理できた行は${autoCount}件です。レビューが必要な不明行はありません。`;
+    ? `自動整理できたメモは${autoCount}件、確認が必要なメモは${pkg.totals.review}件です。CSV保存前に確認してください。`
+    : `自動整理できたメモは${autoCount}件です。レビューが必要なメモはありません。`;
   reviewCopy.textContent = pkg.totals.review
-    ? `自動整理で判断できなかった${pkg.totals.review}件だけをレビュー対象にできます。税務相談ではなく、販売メモの分類補助です。`
-    : "確認が必要な行がないため、レビュー依頼は不要です。";
+    ? `売上・送料・梱包材など、どれに入れるべきか迷うメモ${pkg.totals.review}件だけを確認用リストにできます。`
+    : "確認が必要なメモがないため、レビュー依頼は不要です。";
   reviewButton.textContent = pkg.totals.review
-    ? `不明行${pkg.totals.review}件をレビュー依頼する 980円`
-    : "レビューが必要な不明行はありません";
+    ? `判断に迷うメモ${pkg.totals.review}件をレビュー依頼する 980円`
+    : "レビューが必要なメモはありません";
   reviewButton.disabled = !hasResults || !pkg.totals.review;
   summary.innerHTML = `
-    <div class="metric income"><span>売上候補</span><strong>${yen(pkg.totals.income)}</strong></div>
-    <div class="metric expense"><span>経費候補</span><strong>${yen(pkg.totals.expense)}</strong></div>
-    <div class="metric review"><span>不明行</span><strong>${pkg.totals.review}件</strong></div>
+    <div class="metric income"><span>売上メモ</span><strong>${yen(pkg.totals.income)}</strong></div>
+    <div class="metric expense"><span>経費メモ</span><strong>${yen(pkg.totals.expense)}</strong></div>
+    <div class="metric review"><span>確認メモ</span><strong>${pkg.totals.review}件</strong></div>
   `;
   cards.innerHTML = pkg.items.length
     ? renderResults(pkg)
-    : `<div class="empty">メモを貼ると、売上・経費・不明行に分かれます。<br>まずはサンプルで試せます。</div>`;
+    : `<div class="empty">メモを貼ると、売上メモ・経費メモ・確認が必要なメモに分かれます。<br>まずはサンプルで試せます。</div>`;
   checklist.innerHTML = `<ul>${pkg.checklist.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
@@ -226,8 +228,8 @@ function renderResults(pkg) {
 function renderReviewSection(items) {
   return `
     <section class="review-needed">
-      <h3>確認が必要な行</h3>
-      <p>自動では判断できなかった行です。近いものを選ぶだけで確認済みにできます。</p>
+      <h3>確認が必要なメモ</h3>
+      <p>自動では判断できなかったメモです。近いものを選ぶだけで確認済みにできます。</p>
       ${items.map((item) => renderReviewCard(item)).join("")}
     </section>
   `;
@@ -236,7 +238,7 @@ function renderReviewSection(items) {
 function renderNoReviewSection() {
   return `
     <section class="no-review">
-      <h3>確認が必要な行はありません</h3>
+      <h3>確認が必要なメモはありません</h3>
       <p>CSV保存できます。売上履歴と証憑の保存状況だけ確認してください。</p>
     </section>
   `;
@@ -246,10 +248,11 @@ function renderReviewCard(item) {
   return `
     <article class="review-card" data-id="${item.id}">
       <div>
+        <p class="review-question">このメモは何として整理しますか？</p>
         <strong>${item.amount ? yen(item.amount) : "金額なし"}</strong>
         <span>${escapeHtml(item.memo)}</span>
       </div>
-      <div class="quick-options" aria-label="分類候補">
+      <div class="quick-options" aria-label="整理候補">
         ${quickReviewOptions.map(([value, label]) => `<button type="button" class="category-chip" data-category="${value}">${label}</button>`).join("")}
       </div>
       <details>
@@ -365,13 +368,13 @@ function toChecklist(pkg) {
     `Receipt Sorter 確認リスト`,
     `対象月: ${pkg.period || "未指定"}`,
     `販路: ${pkg.platform || "未指定"}`,
-    `売上候補: ${yen(pkg.totals.income)}`,
-    `経費候補: ${yen(pkg.totals.expense)}`,
-    `確認が必要: ${pkg.totals.review}件`,
+    `売上メモ: ${yen(pkg.totals.income)}`,
+    `経費メモ: ${yen(pkg.totals.expense)}`,
+    `確認が必要なメモ: ${pkg.totals.review}件`,
     "",
     ...pkg.checklist.map((item) => `- ${item}`),
     "",
-    "要確認行:",
+    "確認が必要なメモ:",
     ...pkg.items
       .filter((item) => item.type === "unknown" || item.amount === 0 || item.category === "needs_review")
       .map((item) => `- ${item.memo}`)

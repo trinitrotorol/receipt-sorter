@@ -14,7 +14,7 @@
           <div>
             <p class="kicker">Receipt Sorter</p>
             <h1>散らかった販売メモを、月次CSVと確認リストに整理。</h1>
-            <p class="lead">メルカリ・BOOTHの売上、送料、梱包材メモを貼るだけ。ブラウザ内で売上・経費・確認が必要な行に分けて、判断できない行だけ980円でレビュー依頼できます。</p>
+            <p class="lead">メルカリ・BOOTHの売上、送料、梱包材メモを貼るだけ。メモはアップロード不要で、会計ソフトに移しやすい月次CSVまで作れます。</p>
           </div>
         </div>
         <div class="top-actions" aria-label="試用">
@@ -42,7 +42,7 @@
             <span>売上 2,300円</span>
             <span>送料 210円</span>
             <span>梱包材 330円</span>
-            <span>確認が必要 1件</span>
+            <span>確認メモ 1件</span>
           </div>
         </div>
       </section>
@@ -64,6 +64,7 @@
 6/5 BOOTH 売上 1,200円 アクキー
 6/7 これは何の支出か忘れた 580円"></textarea>
           <p class="input-hint">形式は多少バラバラでもOKです。判断できない行は「確認が必要」に入ります。</p>
+          <p class="input-hint">画像レシートではなく、販売メモや明細テキストを貼り付けて使います。</p>
           <div class="meta-row">
             <label>
               <span>主な販路</span>
@@ -88,9 +89,9 @@
             <div>
               <p class="step-label">STEP 2</p>
               <h2 id="dashboard-title">整理結果はここに表示されます</h2>
-              <p id="dashboard-copy">販売メモを貼って「月次整理する」を押すと、売上・送料・梱包材・確認が必要な行に分けて表示します。</p>
+              <p id="dashboard-copy">販売メモを貼って「月次整理する」を押すと、売上メモ・経費メモ・確認が必要なメモに分けて表示します。</p>
             </div>
-            <span class="price-chip">不明行レビュー 980円</span>
+            <span class="price-chip">確認レビュー 980円</span>
           </div>
 
           <div class="empty-guide" id="empty-guide">
@@ -98,7 +99,7 @@
             <ul>
               <li>月次CSV</li>
               <li>確認リスト</li>
-              <li>不明行レビュー依頼用リスト</li>
+              <li>確認依頼用リスト</li>
             </ul>
             <div class="mini-before-after">
               <div><strong>入力例</strong><span>6/1 メルカリ 2300</span><span>ネコポス 210</span></div>
@@ -111,7 +112,7 @@
           <div class="review-strip result-only">
             <div>
               <strong id="review-count">0件</strong>
-              <span>確認が必要</span>
+              <span>確認メモ</span>
             </div>
             <p id="review-message">CSV保存前に確認してください。</p>
           </div>
@@ -125,10 +126,10 @@
 
           <div class="review-cta result-only" id="review-cta">
             <div>
-              <h3>不明行だけレビュー依頼</h3>
-              <p id="review-copy">自動整理で判断できなかった行だけをレビュー対象にできます。税務相談ではなく、販売メモの分類補助です。</p>
+              <h3>迷うメモだけレビュー依頼</h3>
+              <p id="review-copy">自分で判断しづらいメモだけを確認用リストにして、レビュー依頼できます。</p>
             </div>
-            <button type="button" id="review-button" disabled>不明行をレビュー依頼する 980円</button>
+            <button type="button" id="review-button" disabled>迷うメモをレビュー依頼する 980円</button>
           </div>
 
           <div class="checklist result-only" id="checklist"></div>
@@ -138,18 +139,18 @@
       <section class="sales-panel">
         <div>
           <p class="eyebrow">料金</p>
-          <h2>CSV保存まで無料。不明行レビューだけ980円。</h2>
-          <p>月次整理、確認リスト、CSV保存は無料で試せます。自動で判断できなかった行だけ、人の目で分類補助してほしい場合にレビュー依頼できます。</p>
+          <h2>CSV保存まで無料。迷うメモのレビューだけ980円。</h2>
+          <p>月次整理、確認リスト、CSV保存は無料で試せます。自分で判断しづらいメモだけ、人の目で整理先を確認してほしい場合にレビュー依頼できます。</p>
         </div>
         <div class="price-box">
           <strong>980円</strong>
-          <span>不明行レビュー依頼</span>
-          <small>対象は確認が必要な行のみ。税務相談、節税判断、申告書作成は対象外です。</small>
+          <span>確認レビュー依頼</span>
+          <small>対象は確認が必要なメモのみ。税務相談、節税判断、申告書作成は対象外です。</small>
         </div>
       </section>
 
       <section class="proof-strip">
-        <span>ブラウザ内で仮処理</span>
+        <span>アップロード不要</span>
         <span>OCRなし</span>
         <span>AI API費用なし</span>
         <span>税務判断なし</span>
