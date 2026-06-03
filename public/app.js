@@ -1,10 +1,13 @@
 const notes = document.getElementById("raw-notes");
 const period = document.getElementById("period");
-const useCase = document.getElementById("use-case");
+const platform = document.getElementById("platform");
 const reviewRequest = document.getElementById("review-request");
 const previewButton = document.getElementById("preview-button");
 const demoButton = document.getElementById("demo-button");
-const downloadButton = document.getElementById("download-button");
+const csvButton = document.getElementById("csv-button");
+const csvButtonBottom = document.getElementById("csv-button-bottom");
+const reviewButton = document.getElementById("review-button");
+const checklistButton = document.getElementById("checklist-button");
 const cards = document.getElementById("result-cards");
 const summary = document.getElementById("summary");
 const checklist = document.getElementById("checklist");
@@ -15,15 +18,17 @@ const confidenceBar = document.getElementById("confidence-bar");
 let latestPackage = null;
 
 const demoText = [
-  "6/1 コンビニ コピー代 240円",
+  "6/1 メルカリ 売上 2,480円",
+  "6/1 メルカリ 送料 750円",
   "6/2 BOOTH 売上 3,200円",
   "Amazon 梱包材 1,180円",
-  "メルカリ 送料 750円",
-  "打ち合わせ交通費 680円"
+  "コンビニ コピー代 240円",
+  "イベント交通費 680円"
 ].join("\n");
 
 const categoryLabels = {
   sales: "売上",
+  fee: "手数料",
   shipping: "発送",
   supplies: "備品",
   printing: "印刷",
@@ -34,6 +39,7 @@ const categoryLabels = {
 };
 
 const expenseRules = [
+  ["fee", /手数料|販売手数料|決済手数料/],
   ["shipping", /送料|配送|切手|レターパック|宅急便|ゆうパック/],
   ["supplies", /梱包|封筒|段ボール|ラベル|文具|備品/],
   ["printing", /コピー|印刷|プリント/],
@@ -43,6 +49,17 @@ const expenseRules = [
 ];
 
 const incomeRules = /売上|入金|販売|報酬|BOOTH|BASE|メルカリ|Mercari|Shopify/i;
+const categoryOptions = [
+  ["sales", "売上"],
+  ["fee", "手数料"],
+  ["shipping", "発送"],
+  ["supplies", "備品"],
+  ["printing", "印刷"],
+  ["travel", "交通"],
+  ["software", "ソフト"],
+  ["meeting", "打合せ"],
+  ["needs_review", "要確認"]
+];
 
 function yen(value) {
   return new Intl.NumberFormat("ja-JP", {
@@ -59,10 +76,10 @@ function parseAmount(line) {
 }
 
 function categorize(line) {
-  if (incomeRules.test(line)) return { type: "income", category: "sales" };
   for (const [category, pattern] of expenseRules) {
     if (pattern.test(line)) return { type: "expense", category };
   }
+  if (incomeRules.test(line)) return { type: "income", category: "sales" };
   return { type: "unknown", category: "needs_review" };
 }
 
@@ -85,6 +102,7 @@ function parseNotes(raw) {
 
 function buildPackage() {
   const items = parseNotes(notes.value);
+  const normalizedItems = normalizeItems(items);
   const totals = items.reduce(
     (acc, item) => {
       if (item.type === "income") acc.income += item.amount;
@@ -100,12 +118,20 @@ function buildPackage() {
     version: "0.1.0",
     createdAt: new Date().toISOString(),
     period: period.value || null,
-    useCase: useCase.value,
+    platform: platform.value,
     reviewRequested: reviewRequest.checked,
     totals,
-    items,
+    items: normalizedItems,
     checklist: buildChecklist(items, totals)
   };
+}
+
+function normalizeItems(items) {
+  return items.map((item) => ({
+    ...item,
+    exportColumn: item.type === "income" ? "income" : "expense",
+    note: item.type === "unknown" ? "分類を確認" : ""
+  }));
 }
 
 function buildChecklist(items, totals) {
@@ -114,7 +140,8 @@ function buildChecklist(items, totals) {
   if (totals.review) list.push(`${totals.review}件はカテゴリまたは金額の確認が必要です。`);
   if (!period.value) list.push("対象月を入れると保存ファイル名と月次確認がわかりやすくなります。");
   if (items.length && !totals.review) list.push("初期整理は完了です。証憑の保存状況だけ確認してください。");
-  list.push("会計ソフトに入れる前に、売上と経費を別々に確認してください。");
+  list.push("メルカリ/BOOTHの売上履歴と、送料・梱包材の証憑を照合してください。");
+  list.push("税務判断ではなく、月次整理の補助として使ってください。");
   return list;
 }
 
@@ -136,10 +163,12 @@ function render(pkg) {
 
 function renderCard(item) {
   return `
-    <article class="item-card">
+    <article class="item-card" data-id="${item.id}">
       <span class="type ${item.type}">${typeLabel(item.type)}</span>
       <div class="memo">
-        <strong>${categoryLabels[item.category] || item.category}</strong>
+        <select class="category-select" aria-label="カテゴリ">
+          ${categoryOptions.map(([value, label]) => `<option value="${value}" ${value === item.category ? "selected" : ""}>${label}</option>`).join("")}
+        </select>
         <span>${escapeHtml(item.memo)}</span>
       </div>
       <div class="amount">${item.amount ? yen(item.amount) : "金額なし"}</div>
@@ -159,20 +188,71 @@ function escapeHtml(value) {
   });
 }
 
-function downloadJson(pkg) {
+function downloadJson(pkg, name = "review-request") {
   const blob = new Blob([JSON.stringify(pkg, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = `receipt-sorter-${pkg.period || "request"}.json`;
+  anchor.download = `receipt-sorter-${pkg.period || name}.json`;
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+function downloadText(text, filename, type = "text/plain") {
+  const blob = new Blob([text], { type });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function toCsv(pkg) {
+  const header = ["対象月", "販路", "種類", "カテゴリ", "金額", "メモ", "確認"];
+  const rows = pkg.items.map((item) => [
+    pkg.period || "",
+    pkg.platform || "",
+    typeLabel(item.type),
+    categoryLabels[item.category] || item.category,
+    item.amount || "",
+    item.memo,
+    item.note || ""
+  ]);
+  return [header, ...rows].map((row) => row.map(csvCell).join(",")).join("\n") + "\n";
+}
+
+function csvCell(value) {
+  return `"${String(value).replace(/"/g, '""')}"`;
+}
+
+function toChecklist(pkg) {
+  const lines = [
+    `Receipt Sorter 確認リスト`,
+    `対象月: ${pkg.period || "未指定"}`,
+    `販路: ${pkg.platform || "未指定"}`,
+    "",
+    ...pkg.checklist.map((item) => `- ${item}`),
+    "",
+    "要確認行:",
+    ...pkg.items
+      .filter((item) => item.type === "unknown" || item.amount === 0 || item.category === "needs_review")
+      .map((item) => `- ${item.memo}`)
+  ];
+  return lines.join("\n") + "\n";
 }
 
 function runPreview() {
   latestPackage = buildPackage();
   render(latestPackage);
-  downloadButton.disabled = false;
+  setExportEnabled(true);
+}
+
+function setExportEnabled(enabled) {
+  csvButton.disabled = !enabled;
+  csvButtonBottom.disabled = !enabled;
+  reviewButton.disabled = !enabled;
+  checklistButton.disabled = !enabled;
 }
 
 previewButton.addEventListener("click", runPreview);
@@ -183,8 +263,44 @@ demoButton.addEventListener("click", () => {
   runPreview();
 });
 
-downloadButton.addEventListener("click", () => {
-  if (latestPackage) downloadJson(latestPackage);
+cards.addEventListener("change", (event) => {
+  if (!event.target.classList.contains("category-select") || !latestPackage) return;
+  const card = event.target.closest(".item-card");
+  const item = latestPackage.items.find((candidate) => candidate.id === card.dataset.id);
+  if (!item) return;
+  item.category = event.target.value;
+  if (item.category === "sales") item.type = "income";
+  if (item.category !== "sales" && item.category !== "needs_review") item.type = "expense";
+  if (item.category === "needs_review") item.type = "unknown";
+  item.exportColumn = item.type === "income" ? "income" : "expense";
+  item.note = item.type === "unknown" || item.amount === 0 ? "確認が必要" : "";
+  latestPackage.totals = latestPackage.items.reduce(
+    (acc, current) => {
+      if (current.type === "income") acc.income += current.amount;
+      if (current.type === "expense") acc.expense += current.amount;
+      if (current.type === "unknown" || current.amount === 0) acc.review += 1;
+      return acc;
+    },
+    { income: 0, expense: 0, review: 0 }
+  );
+  latestPackage.checklist = buildChecklist(latestPackage.items, latestPackage.totals);
+  render(latestPackage);
+});
+
+csvButton.addEventListener("click", () => {
+  if (latestPackage) downloadText(toCsv(latestPackage), `receipt-sorter-${latestPackage.period || "monthly"}.csv`, "text/csv");
+});
+
+csvButtonBottom.addEventListener("click", () => {
+  if (latestPackage) downloadText(toCsv(latestPackage), `receipt-sorter-${latestPackage.period || "monthly"}.csv`, "text/csv");
+});
+
+checklistButton.addEventListener("click", () => {
+  if (latestPackage) downloadText(toChecklist(latestPackage), `receipt-sorter-${latestPackage.period || "checklist"}.txt`);
+});
+
+reviewButton.addEventListener("click", () => {
+  if (latestPackage) downloadJson({ ...latestPackage, reviewRequested: true }, "review-request");
 });
 
 render({
@@ -192,4 +308,4 @@ render({
   items: [],
   checklist: ["左にメモを貼って、仕分けるを押してください。"]
 });
-
+setExportEnabled(false);

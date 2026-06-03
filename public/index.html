@@ -11,11 +11,12 @@
       <header class="topbar">
         <div>
           <p class="kicker">Receipt Sorter</p>
-          <h1>メモを貼るだけ。副業の収支を仕分ける。</h1>
+          <h1>メルカリ・BOOTHの月次収支を仕分ける。</h1>
         </div>
         <div class="top-actions">
           <button type="button" id="demo-button" class="ghost">サンプル</button>
-          <button type="button" id="download-button" disabled>保存</button>
+          <button type="button" id="csv-button" disabled>CSV</button>
+          <button type="button" id="review-button" disabled>レビュー依頼</button>
         </div>
       </header>
 
@@ -28,18 +29,20 @@
       <section class="layout">
         <aside class="capture">
           <div class="capture-head">
-            <h2>今月のメモ</h2>
+            <h2>販売メモ</h2>
             <span id="status-pill">未整理</span>
           </div>
-          <textarea id="raw-notes" rows="12" placeholder="コピー代 240
+          <textarea id="raw-notes" rows="12" placeholder="メルカリ 売上 2480
+メルカリ 送料 750
 BOOTH 売上 3200
-Amazon 梱包材 1180
-打ち合わせ交通費 680"></textarea>
+梱包材 1180
+コピー代 240"></textarea>
           <div class="meta-row">
-            <select id="use-case" aria-label="用途">
-              <option value="sidejob">副業</option>
-              <option value="seller">フリマ・EC販売</option>
-              <option value="freelance">個人事業</option>
+            <select id="platform" aria-label="販路">
+              <option value="mercari-booth">メルカリ + BOOTH</option>
+              <option value="mercari">メルカリ</option>
+              <option value="booth">BOOTH</option>
+              <option value="other">その他</option>
             </select>
             <input id="period" type="month" aria-label="対象月">
           </div>
@@ -52,6 +55,14 @@ Amazon 梱包材 1180
         </aside>
 
         <section class="dashboard">
+          <div class="offer-strip">
+            <div>
+              <strong>月次レビュー 980円</strong>
+              <span>不明行だけ確認。税務判断ではなく整理補助です。</span>
+            </div>
+            <span>初期検証中</span>
+          </div>
+
           <div class="summary" id="summary"></div>
 
           <div class="review-strip">
@@ -63,6 +74,11 @@ Amazon 梱包材 1180
           </div>
 
           <div class="cards" id="result-cards"></div>
+
+          <div class="export-panel">
+            <button type="button" id="checklist-button" class="ghost" disabled>確認リスト</button>
+            <button type="button" id="csv-button-bottom" disabled>月次CSV</button>
+          </div>
 
           <div class="checklist" id="checklist"></div>
         </section>

@@ -70,7 +70,9 @@ h2 {
 
 .top-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  justify-content: flex-end;
 }
 
 button {
@@ -98,6 +100,38 @@ button:disabled {
   width: 100%;
   margin-top: 12px;
   font-size: 17px;
+}
+
+.offer-strip {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  border-radius: 10px;
+  background: var(--soft-blue);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.offer-strip strong,
+.offer-strip span {
+  display: block;
+}
+
+.offer-strip span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.offer-strip > span {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--blue);
+  padding: 6px 10px;
+  font-weight: 900;
 }
 
 .flow {
@@ -360,8 +394,20 @@ input {
 
 .memo span {
   display: block;
+  margin-top: 5px;
   color: var(--muted);
   overflow-wrap: anywhere;
+}
+
+.category-select {
+  width: min(180px, 100%);
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 10px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 800;
 }
 
 .amount {
@@ -377,6 +423,13 @@ input {
   padding: 12px 14px;
   color: var(--muted);
   line-height: 1.6;
+}
+
+.export-panel {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
 }
 
 .checklist ul {
@@ -426,4 +479,3 @@ input {
     justify-self: start;
   }
 }
-
