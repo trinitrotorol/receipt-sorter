@@ -12,9 +12,11 @@ Use Cloudflare because requirements are lighter than Google Play or Apple App St
 
 ## Current MVP Scope
 
-- Browser-side cleanup preview.
+- Landing-first entry screen at `public/index.html`.
+- Browser-side cleanup preview at `public/app.html`.
 - Editable review cards for type, category, and amount correction.
 - Copyable monthly confirmation checklist.
+- Compatibility copy of the landing page at `public/landing.html` for owner review.
 - JSON export.
 - Worker queue source for future OpenClaw review.
 - No file uploads.
@@ -24,9 +26,9 @@ Use Cloudflare because requirements are lighter than Google Play or Apple App St
 
 Do not sell this as generic receipt OCR, full accounting software, or CSV conversion.
 
-Sell the first version as a browser-only monthly check tool for Mercari, BOOTH, BASE, minne, and small side-job sellers:
+Sell the first version as a browser-only monthly check tool for Mercari side sellers with roughly 10-50 sales notes per month:
 
-- Paste sales notes, shipping notes, receipt notes, and admin memos.
+- Paste sales notes, shipping notes, fee notes, packaging notes, and admin memos.
 - Split them into sales, shipping, supplies, printing, travel, software, meeting, and needs-review.
 - Produce a monthly summary and confirmation checklist before accounting software or tax-accountant work.
 - Keep data local unless the user explicitly saves or submits a package.
@@ -38,10 +40,12 @@ Initial pricing hypothesis:
 
 ## Next Build Step
 
-Prepare launch/acquisition material before backend submission:
+Align acquisition material with the narrowed landing-page offer:
 
-- One-page landing copy for JPY 1,980 beta/lifetime purchase.
-- Short demo script using synthetic Mercari/BOOTH notes.
-- List of 10 distribution targets or communities where posting can be reviewed by the owner.
+- Keep the older "confirmation review 980 yen" wording out of the first release.
+- Keep JPY 1,980 beta/lifetime purchase as the only visible pricing hypothesis.
+- Keep BOOTH out of the first landing page; validate it later with a separate creator-sales page if needed.
+- Keep the demo local and synthetic.
+- Do not add payment, form submission, analytics, or external posting before owner approval.
 
 Backend submission should wait until there is an approved route and a clear paid-review model.

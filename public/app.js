@@ -23,10 +23,10 @@ let latestPackage = null;
 const demoText = [
   "6/1 メルカリ 売上 2,480円",
   "6/1 メルカリ 送料 750円",
-  "6/2 BOOTH 売上 3,200円",
-  "Amazon 梱包材 1,180円",
-  "コンビニ コピー代 240円",
-  "イベント交通費 680円"
+  "6/2 メルカリ バッグ 売上 3,200円",
+  "6/2 メルカリ 販売手数料 320円",
+  "セリア 梱包材 440円",
+  "6/7 これは何の支出か忘れた 580円"
 ].join("\n");
 
 const categoryLabels = {
@@ -145,7 +145,7 @@ function buildChecklist(items, totals) {
   if (totals.review) list.push(`${totals.review}件はカテゴリまたは金額だけ確認してください。`);
   if (!period.value) list.push("対象月を入れると保存ファイル名と月次確認がわかりやすくなります。");
   if (items.length && !totals.review) list.push("下ごしらえは完了です。売上履歴と証憑の保存状況だけ確認してください。");
-  list.push("メルカリ/BOOTHの売上履歴と、送料・梱包材の証憑を照合してください。");
+  list.push("メルカリの売上履歴と、送料・梱包材の証憑を照合してください。");
   list.push("税務判断ではなく、月次整理の補助として使ってください。");
   return list;
 }
@@ -185,10 +185,10 @@ function render(pkg) {
     : `自動整理できたメモは${autoCount}件です。レビューが必要なメモはありません。`;
   reviewCopy.textContent = pkg.totals.review
     ? `売上・送料・梱包材など、どれに入れるべきか迷うメモ${pkg.totals.review}件だけを確認用リストにできます。`
-    : "確認が必要なメモがないため、レビュー依頼は不要です。";
+    : "確認が必要なメモはありません。CSVと確認リストを保存できます。";
   reviewButton.textContent = pkg.totals.review
-    ? `判断に迷うメモ${pkg.totals.review}件をレビュー依頼する 980円`
-    : "レビューが必要なメモはありません";
+    ? `迷うメモ${pkg.totals.review}件の確認リストをJSON保存`
+    : "確認リストをJSON保存";
   reviewButton.disabled = !hasResults || !pkg.totals.review;
   summary.innerHTML = `
     <div class="metric income"><span>売上メモ</span><strong>${yen(pkg.totals.income)}</strong></div>
@@ -365,7 +365,7 @@ function csvCell(value) {
 
 function toChecklist(pkg) {
   const lines = [
-    `Receipt Sorter 確認リスト`,
+    `メルカリ月次メモ整理 確認リスト`,
     `対象月: ${pkg.period || "未指定"}`,
     `販路: ${pkg.platform || "未指定"}`,
     `売上メモ: ${yen(pkg.totals.income)}`,

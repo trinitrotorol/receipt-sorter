@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>メルカリ月次メモ整理</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">RS</span>
+          <div>
+            <p class="kicker">メルカリ月次メモ整理</p>
+            <h1>メルカリの販売メモを、申告前の確認リストに整理。</h1>
+            <p class="lead">売上、送料、手数料、梱包材メモを貼るだけ。メモはアップロード不要で、会計ソフトに移す前の確認とCSV保存までできます。</p>
+          </div>
+        </div>
+        <div class="top-actions" aria-label="試用">
+          <button type="button" id="demo-button" class="ghost">サンプルで試す</button>
+          <button type="button" id="start-button">販売メモを貼って始める</button>
+        </div>
+      </header>
+
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">小規模販売者の月次整理</p>
+          <h2>月末にぐちゃっと残ったメモを、会計ソフトに入れる前の形まで。</h2>
+          <p>税務判断ではなく、販売メモの整理補助です。写真読み取りや申告書作成はしません。</p>
+        </div>
+        <div class="before-after" aria-label="整理例">
+          <div>
+            <strong>Before</strong>
+            <span>6/1 メルカリ 2300</span>
+            <span>ネコポス 210</span>
+            <span>ダイソー 梱包材 330</span>
+            <span>これ何だっけ 580</span>
+          </div>
+          <div>
+            <strong>After</strong>
+            <span>売上 2,300円</span>
+            <span>送料 210円</span>
+            <span>梱包材 330円</span>
+            <span>確認メモ 1件</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="layout">
+        <aside class="capture">
+          <div class="section-head">
+            <div>
+              <p class="step-label">STEP 1</p>
+              <h2>販売メモを貼り付け</h2>
+              <p>日付・金額・売上/送料/梱包材などの言葉があると整理しやすくなります。</p>
+            </div>
+            <span id="status-pill">未整理</span>
+          </div>
+          <textarea id="raw-notes" rows="12" placeholder="例）
+6/1 メルカリ 売上 2,300円 Tシャツ
+6/2 ネコポス送料 210円
+6/3 ダイソー 梱包材 330円
+6/5 メルカリ 販売手数料 120円
+6/7 これは何の支出か忘れた 580円"></textarea>
+          <p class="input-hint">形式は多少バラバラでもOKです。判断できない行は「確認が必要」に入ります。</p>
+          <p class="input-hint">画像レシートではなく、販売メモや明細テキストを貼り付けて使います。</p>
+          <div class="meta-row">
+            <label>
+              <span>主な販路</span>
+              <select id="platform" aria-label="販路">
+              <option value="mercari">メルカリ</option>
+              <option value="other">その他小規模物販</option>
+              </select>
+            </label>
+            <label>
+              <span>整理する月</span>
+              <input id="period" type="month" aria-label="対象月">
+            </label>
+          </div>
+          <button type="button" id="preview-button" class="primary">月次整理する</button>
+          <p class="notice">このツールは販売メモの整理補助です。税務相談や申告書作成は行いません。個人番号、カード番号、医療・給与・顧客秘密情報は入力しないでください。</p>
+        </aside>
+
+        <section class="dashboard" id="dashboard">
+          <div class="section-head">
+            <div>
+              <p class="step-label">STEP 2</p>
+              <h2 id="dashboard-title">整理結果はここに表示されます</h2>
+              <p id="dashboard-copy">販売メモを貼って「月次整理する」を押すと、売上メモ・経費メモ・確認が必要なメモに分けて表示します。</p>
+            </div>
+            <span class="price-chip">無料デモ</span>
+          </div>
+
+          <div class="empty-guide" id="empty-guide">
+            <h3>出力できるもの</h3>
+            <ul>
+              <li>月次CSV</li>
+              <li>確認リスト</li>
+              <li>要確認リスト</li>
+            </ul>
+            <div class="mini-before-after">
+              <div><strong>入力例</strong><span>6/1 メルカリ 2300</span><span>ネコポス 210</span></div>
+              <div><strong>整理後</strong><span>売上 2,300円</span><span>送料 210円</span></div>
+            </div>
+          </div>
+
+          <div class="summary result-only" id="summary"></div>
+
+          <div class="review-strip result-only">
+            <div>
+              <strong id="review-count">0件</strong>
+              <span>確認メモ</span>
+            </div>
+            <p id="review-message">CSV保存前に確認してください。</p>
+          </div>
+
+          <div class="cards result-only" id="result-cards"></div>
+
+          <div class="export-panel result-only">
+            <button type="button" id="checklist-button" class="ghost" disabled>確認リストをコピー</button>
+            <button type="button" id="csv-button-bottom" disabled>月次CSV保存</button>
+          </div>
+
+          <div class="review-cta result-only" id="review-cta">
+            <div>
+              <h3>初回版の購入導線は準備中</h3>
+              <p id="review-copy">迷うメモだけを確認用リストにして、購入前に手元のメモで使えるか確認できます。</p>
+            </div>
+            <button type="button" id="review-button" disabled>確認リストをJSON保存</button>
+          </div>
+
+          <div class="checklist result-only" id="checklist"></div>
+        </section>
+      </section>
+
+      <section class="sales-panel">
+        <div>
+          <p class="eyebrow">料金</p>
+          <h2>無料デモで確認。初回版は買い切り1,980円を想定。</h2>
+          <p>月次整理、確認リスト、CSV保存を試せます。決済導線はまだ未接続です。まずは手元の販売メモが整理できるかを確認してください。</p>
+        </div>
+        <div class="price-box">
+          <strong>1,980円</strong>
+          <span>初回版 / 買い切り仮説</span>
+          <small>税務相談、節税判断、申告書作成、レシート画像OCRは対象外です。</small>
+        </div>
+      </section>
+
+      <section class="proof-strip">
+        <span>アップロード不要</span>
+        <span>OCRなし</span>
+        <span>外部AI送信なし</span>
+        <span>税務判断なし</span>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
