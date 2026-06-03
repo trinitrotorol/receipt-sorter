@@ -4,6 +4,8 @@ const platform = document.getElementById("platform");
 const previewButton = document.getElementById("preview-button");
 const demoButton = document.getElementById("demo-button");
 const startButton = document.getElementById("start-button");
+const ownNotesButton = document.getElementById("own-notes-button");
+const clearSampleButton = document.getElementById("clear-sample-button");
 const csvButtonBottom = document.getElementById("csv-button-bottom");
 const reviewButton = document.getElementById("review-button");
 const checklistButton = document.getElementById("checklist-button");
@@ -17,8 +19,11 @@ const statusPill = document.getElementById("status-pill");
 const reviewCount = document.getElementById("review-count");
 const reviewMessage = document.getElementById("review-message");
 const reviewCopy = document.getElementById("review-copy");
+const tryOwnTitle = document.getElementById("try-own-title");
+const tryOwnCopy = document.getElementById("try-own-copy");
 
 let latestPackage = null;
+let demoMode = false;
 
 const demoText = [
   "6/1 メルカリ 売上 2,480円",
@@ -172,6 +177,7 @@ function render(pkg) {
   const hasResults = pkg.items.length > 0;
   const autoCount = Math.max(0, pkg.items.length - pkg.totals.review);
   dashboard.classList.toggle("has-results", hasResults);
+  dashboard.classList.toggle("demo-results", hasResults && demoMode);
   statusPill.textContent = hasResults ? "整理済み" : "未整理";
   dashboardTitle.textContent = hasResults
     ? (pkg.totals.review ? `あと${pkg.totals.review}件確認すれば、月次CSVを保存できます。` : `${periodLabel(pkg.period)}の整理は完了です`)
@@ -186,6 +192,10 @@ function render(pkg) {
   reviewCopy.textContent = pkg.totals.review
     ? `売上・送料・梱包材など、どれに入れるべきか迷うメモ${pkg.totals.review}件だけを確認用リストにできます。`
     : "確認が必要なメモはありません。CSVと確認リストを保存できます。";
+  tryOwnTitle.textContent = demoMode ? "サンプルで流れは確認済みです。次は自分のメモで試してください。" : "この結果で使えるか確認してください";
+  tryOwnCopy.textContent = demoMode
+    ? "月末の販売履歴、送料、梱包材メモをそのまま貼ると、確認が必要な行だけ残します。写真や個人情報は入れないでください。"
+    : "分類が違う行はボタンで直せます。使えそうなら確認リストをコピーし、月次CSVを保存してください。";
   reviewButton.textContent = pkg.totals.review
     ? `迷うメモ${pkg.totals.review}件の確認リストをJSON保存`
     : "確認リストをJSON保存";
@@ -415,6 +425,7 @@ function finalizeItem(item) {
 }
 
 function runPreview() {
+  demoMode = false;
   latestPackage = buildPackage();
   render(latestPackage);
   setExportEnabled(true);
@@ -433,11 +444,31 @@ startButton.addEventListener("click", () => {
   notes.scrollIntoView({ behavior: "smooth", block: "center" });
 });
 
+function resetForOwnNotes() {
+  demoMode = false;
+  notes.value = "";
+  latestPackage = {
+    totals: { income: 0, expense: 0, review: 0 },
+    items: [],
+    checklist: ["左にメモを貼って、月次整理を作るを押してください。"]
+  };
+  render(latestPackage);
+  setExportEnabled(false);
+  notes.focus();
+  notes.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
 demoButton.addEventListener("click", () => {
+  demoMode = true;
   notes.value = demoText;
   if (!period.value) period.value = "2026-06";
-  runPreview();
+  latestPackage = buildPackage();
+  render(latestPackage);
+  setExportEnabled(true);
 });
+
+ownNotesButton.addEventListener("click", resetForOwnNotes);
+clearSampleButton.addEventListener("click", resetForOwnNotes);
 
 cards.addEventListener("change", (event) => {
   if (!latestPackage) return;
@@ -445,7 +476,8 @@ cards.addEventListener("change", (event) => {
   const isType = event.target.classList.contains("type-select");
   const isAmount = event.target.classList.contains("amount-input");
   if (!isCategory && !isType && !isAmount) return;
-  const card = event.target.closest(".item-card");
+  const card = event.target.closest("[data-id]");
+  if (!card) return;
   const item = latestPackage.items.find((candidate) => candidate.id === card.dataset.id);
   if (!item) return;
   if (isCategory) setTypeFromCategory(item, event.target.value);

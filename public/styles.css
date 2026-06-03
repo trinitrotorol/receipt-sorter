@@ -436,6 +436,37 @@ input {
   font-size: 13px;
 }
 
+.try-own-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin: 0 0 16px;
+  border: 1px solid #cedaf7;
+  border-radius: 8px;
+  background: var(--sky);
+  padding: 14px;
+}
+
+.try-own-card h3 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.try-own-card p:not(.step-label) {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.try-own-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 .cards {
   display: grid;
   gap: 10px;
@@ -879,6 +910,10 @@ input {
   margin-top: 22px;
 }
 
+.section-actions {
+  margin-top: 16px;
+}
+
 .mobile-hero-cta {
   display: none;
 }
@@ -1120,6 +1155,7 @@ input {
   .before-after,
   .mini-before-after,
   .review-cta,
+  .try-own-card,
   .landing-hero-grid,
   .landing-section.split,
   .value-grid,
@@ -1129,6 +1165,14 @@ input {
 
   .top-actions {
     justify-content: stretch;
+  }
+
+  .try-own-actions {
+    justify-content: stretch;
+  }
+
+  .try-own-actions button {
+    flex: 1;
   }
 
   .top-actions button {
