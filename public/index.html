@@ -9,27 +9,33 @@
   <body>
     <main class="app-shell">
       <header class="topbar">
-        <div>
-          <p class="kicker">Receipt Sorter</p>
-          <h1>メルカリ・BOOTHの月次収支を仕分ける。</h1>
+        <div class="brand">
+          <span class="brand-mark">RS</span>
+          <div>
+            <p class="kicker">Receipt Sorter</p>
+            <h1>メルカリ・BOOTH販売の月末整理を、10分で下ごしらえ。</h1>
+          </div>
         </div>
-        <div class="top-actions">
+        <div class="top-actions" aria-label="出力">
           <button type="button" id="demo-button" class="ghost">サンプル</button>
           <button type="button" id="csv-button" disabled>CSV</button>
           <button type="button" id="review-button" disabled>レビュー依頼</button>
         </div>
       </header>
 
-      <section class="flow">
-        <div class="step active"><span>1</span>貼る</div>
-        <div class="step"><span>2</span>確認</div>
-        <div class="step"><span>3</span>出力</div>
+      <section class="status-line">
+        <div><strong>対象</strong><span>メルカリ / BOOTH / 小規模物販</span></div>
+        <div><strong>出力</strong><span>月次CSV・確認リスト</span></div>
+        <div><strong>レビュー</strong><span>不明行だけ 980円</span></div>
       </section>
 
       <section class="layout">
         <aside class="capture">
-          <div class="capture-head">
-            <h2>販売メモ</h2>
+          <div class="section-head">
+            <div>
+              <h2>販売メモ</h2>
+              <p>売上、送料、梱包材、印刷代をそのまま貼り付けます。</p>
+            </div>
             <span id="status-pill">未整理</span>
           </div>
           <textarea id="raw-notes" rows="12" placeholder="メルカリ 売上 2480
@@ -55,12 +61,12 @@ BOOTH 売上 3200
         </aside>
 
         <section class="dashboard">
-          <div class="offer-strip">
+          <div class="section-head">
             <div>
-              <strong>月次レビュー 980円</strong>
-              <span>不明行だけ確認。税務判断ではなく整理補助です。</span>
+              <h2>月次整理</h2>
+              <p>会計ソフトに入れる前の確認用です。税務判断は行いません。</p>
             </div>
-            <span>初期検証中</span>
+            <span class="price-chip">レビュー 980円</span>
           </div>
 
           <div class="summary" id="summary"></div>
@@ -82,6 +88,12 @@ BOOTH 売上 3200
 
           <div class="checklist" id="checklist"></div>
         </section>
+      </section>
+
+      <section class="proof-strip">
+        <span>データは初期状態ではブラウザ内処理</span>
+        <span>OCRなし・AI API費用なし</span>
+        <span>不明行だけレビュー対象</span>
       </section>
     </main>
 
