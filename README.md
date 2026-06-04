@@ -1,27 +1,24 @@
 # Receipt Sorter
 
-Low-maintenance web app for side-job workers and sole proprietors who need to organize messy receipt, invoice, and sales notes before accounting or tax work.
+Browser-based monthly sales-note organizer for small Mercari and side-business sellers.
 
-## Positioning
+## What It Does
 
-This app does not sell "CSV conversion." It sells relief from a concrete admin chore:
+Receipt Sorter helps users turn messy sales, shipping, fee, packaging, and admin notes into a monthly review table before they move numbers into accounting software.
 
-- paste messy Mercari sales, shipping, fee, and packaging notes
-- get a structured cleanup preview in the browser
-- correct only the rows that need review
-- copy a monthly confirmation checklist and save an export for later accounting work
+- Paste sales and expense notes.
+- Review automatically grouped rows.
+- Correct type, category, and amount where needed.
+- Copy a monthly confirmation checklist.
+- Export a JSON package for local recordkeeping.
+- Save and restore a browser-local draft.
 
-The first release avoids runtime AI API cost. Browser-side rules do the first pass. Manual/OpenClaw-assisted review is not part of the first public offer.
+The app is browser-side and rule-based. It does not upload files, perform OCR, provide tax advice, or create tax filings.
 
-## Release Target
+## Public URLs
 
-Recommended release path:
-
-- Frontend: Cloudflare Pages
-- Backend: defer until an approved paid review model exists
-- Storage: defer until an approved paid review model exists
-
-This avoids Google Play and Apple App Store review. It also keeps the app separate from the main OpenClaw workspace. Worker/KV queue support can wait until there is a clear paid review model.
+- Landing page: `https://receipt-sorter.pages.dev`
+- App: `https://receipt-sorter.pages.dev/app.html`
 
 ## Local Run
 
@@ -37,7 +34,7 @@ Then open:
 http://127.0.0.1:4173
 ```
 
-## Local Queue Processing
+## Local Sample Processing
 
 Example:
 
@@ -47,18 +44,16 @@ npm run process:sample
 
 This reads `examples/sample-request.json` and writes a structured result to `data/results/`.
 
-## Safety Model
+Generated results are ignored by git except for `data/results/.gitkeep`.
 
-- Public users never access OpenClaw directly.
-- No OpenClaw review queue is connected in the first public offer.
-- If a review queue is added later, OpenClaw pulls pending requests through a narrow API or local export.
-- OpenClaw does not receive secrets, workspace memory, Discord access, Gmail access, or shell access through the app.
-- No file uploads in the first version.
-- Users are told not to submit personal numbers, card numbers, medical info, payroll data, or confidential client data.
+## Development Notes
 
-## Pricing Hypothesis
+- Static files live in `public/`.
+- The app entry point is `public/app.html`.
+- The landing entry point is `public/index.html`.
+- `public/landing.html` is kept as a compatibility copy of the landing page.
+- Do not commit `.env`, `.env.*`, `.wrangler/`, generated queue JSON, generated result JSON, or local credentials.
 
-- Free browser preview.
-- JPY 1,980 one-time beta/lifetime purchase for the first public offer.
-- Later: JPY 3,980/year only after repeated monthly cleanup is visible.
-- JPY 980/month or manual review pricing should stay out of the first release until usage and support burden are proven.
+## Scope
+
+Receipt Sorter is not affiliated with Mercari. It is a note organization tool, not accounting, legal, or tax advice.
