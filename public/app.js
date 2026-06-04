@@ -6,6 +6,10 @@ const demoButton = document.getElementById("demo-button");
 const startButton = document.getElementById("start-button");
 const ownNotesButton = document.getElementById("own-notes-button");
 const clearSampleButton = document.getElementById("clear-sample-button");
+const saveButton = document.getElementById("save-button");
+const loadButton = document.getElementById("load-button");
+const deleteSaveButton = document.getElementById("delete-save-button");
+const saveStatus = document.getElementById("save-status");
 const csvButtonBottom = document.getElementById("csv-button-bottom");
 const reviewButton = document.getElementById("review-button");
 const checklistButton = document.getElementById("checklist-button");
@@ -24,6 +28,8 @@ const tryOwnCopy = document.getElementById("try-own-copy");
 
 let latestPackage = null;
 let demoMode = false;
+
+const saveKey = "receipt-sorter:draft:v1";
 
 const demoText = [
   "6/1 メルカリ 売上 2,480円",
@@ -168,7 +174,10 @@ function calculateTotals(items) {
 }
 
 function refreshPackage(pkg) {
+  pkg.period = period.value || null;
+  pkg.platform = platform.value;
   pkg.totals = calculateTotals(pkg.items);
+  pkg.reviewRequested = Boolean(pkg.totals.review);
   pkg.checklist = buildChecklist(pkg.items, pkg.totals);
   return pkg;
 }
@@ -345,6 +354,92 @@ function downloadJson(pkg, name = "review-request") {
   URL.revokeObjectURL(url);
 }
 
+function formatSavedAt(value) {
+  if (!value) return "";
+  const savedAt = new Date(value);
+  if (Number.isNaN(savedAt.getTime())) return "";
+  return new Intl.DateTimeFormat("ja-JP", {
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(savedAt);
+}
+
+function hasSavedDraft() {
+  try {
+    return Boolean(localStorage.getItem(saveKey));
+  } catch {
+    return false;
+  }
+}
+
+function updateSaveStatus(message) {
+  const saved = readDraft();
+  const savedAt = saved?.savedAt ? formatSavedAt(saved.savedAt) : "";
+  saveStatus.textContent = message || (savedAt ? `保存済み ${savedAt}` : "未保存");
+  loadButton.disabled = !saved;
+  deleteSaveButton.disabled = !saved;
+}
+
+function buildDraft() {
+  const pkg = latestPackage ? refreshPackage(latestPackage) : buildPackage();
+  return {
+    savedAt: new Date().toISOString(),
+    rawNotes: notes.value,
+    period: period.value || "",
+    platform: platform.value,
+    demoMode,
+    package: pkg
+  };
+}
+
+function readDraft() {
+  try {
+    const saved = localStorage.getItem(saveKey);
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveDraft() {
+  try {
+    localStorage.setItem(saveKey, JSON.stringify(buildDraft()));
+    updateSaveStatus("保存しました");
+    window.setTimeout(() => updateSaveStatus(), 1200);
+  } catch {
+    updateSaveStatus("保存できませんでした");
+  }
+}
+
+function restoreDraft() {
+  const draft = readDraft();
+  if (!draft) {
+    updateSaveStatus("保存はありません");
+    return;
+  }
+  notes.value = draft.rawNotes || "";
+  period.value = draft.period || "";
+  platform.value = draft.platform || "mercari";
+  demoMode = Boolean(draft.demoMode);
+  latestPackage = draft.package?.items ? refreshPackage(draft.package) : buildPackage();
+  render(latestPackage);
+  setExportEnabled(latestPackage.items.length > 0);
+  updateSaveStatus("復元しました");
+  window.setTimeout(() => updateSaveStatus(), 1200);
+}
+
+function deleteDraft() {
+  try {
+    localStorage.removeItem(saveKey);
+    updateSaveStatus("削除しました");
+    window.setTimeout(() => updateSaveStatus(), 1200);
+  } catch {
+    updateSaveStatus("削除できませんでした");
+  }
+}
+
 function downloadText(text, filename, type = "text/plain") {
   const blob = new Blob([text], { type });
   const url = URL.createObjectURL(blob);
@@ -439,6 +534,15 @@ function setExportEnabled(enabled) {
 
 previewButton.addEventListener("click", runPreview);
 
+[notes, period, platform].forEach((field) => {
+  const markChanged = () => {
+    if (latestPackage) refreshPackage(latestPackage);
+    saveStatus.textContent = hasSavedDraft() ? "変更あり" : "未保存";
+  };
+  field.addEventListener("input", markChanged);
+  field.addEventListener("change", markChanged);
+});
+
 startButton.addEventListener("click", () => {
   notes.focus();
   notes.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -469,6 +573,9 @@ demoButton.addEventListener("click", () => {
 
 ownNotesButton.addEventListener("click", resetForOwnNotes);
 clearSampleButton.addEventListener("click", resetForOwnNotes);
+saveButton.addEventListener("click", saveDraft);
+loadButton.addEventListener("click", restoreDraft);
+deleteSaveButton.addEventListener("click", deleteDraft);
 
 cards.addEventListener("change", (event) => {
   if (!latestPackage) return;
@@ -485,6 +592,7 @@ cards.addEventListener("change", (event) => {
   if (isAmount) item.amount = Number(event.target.value) || 0;
   finalizeItem(item);
   render(refreshPackage(latestPackage));
+  saveStatus.textContent = hasSavedDraft() ? "変更あり" : "未保存";
 });
 
 cards.addEventListener("click", (event) => {
@@ -495,6 +603,7 @@ cards.addEventListener("click", (event) => {
   setTypeFromCategory(item, event.target.dataset.category);
   finalizeItem(item);
   render(refreshPackage(latestPackage));
+  saveStatus.textContent = hasSavedDraft() ? "変更あり" : "未保存";
 });
 
 csvButtonBottom.addEventListener("click", () => {
@@ -526,3 +635,4 @@ render({
   checklist: ["左にメモを貼って、月次整理を作るを押してください。"]
 });
 setExportEnabled(false);
+updateSaveStatus();

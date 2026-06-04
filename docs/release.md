@@ -5,10 +5,9 @@
 Use Cloudflare because requirements are lighter than Google Play or Apple App Store.
 
 1. Create a Cloudflare Pages project for `public/`.
-2. Create a Cloudflare Worker from `worker/worker.js`.
-3. Create a KV namespace and bind it as `RECEIPT_SORTER_KV`.
-4. Set `OPENCLAW_QUEUE_TOKEN` as a Worker secret.
-5. Add the Worker API URL to the frontend when request submission is enabled.
+2. Keep the public demo browser-only at first.
+3. Create a Cloudflare Worker and KV queue only after an owner-approved paid review model exists.
+4. If the queue is enabled later, bind KV as `RECEIPT_SORTER_KV`, set `OPENCLAW_QUEUE_TOKEN`, and add the Worker API URL to the frontend.
 
 ## Current MVP Scope
 
@@ -18,7 +17,7 @@ Use Cloudflare because requirements are lighter than Google Play or Apple App St
 - Copyable monthly confirmation checklist.
 - Compatibility copy of the landing page at `public/landing.html` for owner review.
 - JSON export.
-- Worker queue source for future OpenClaw review.
+- Worker queue source remains available for future OpenClaw review, but is not part of the first public offer.
 - No file uploads.
 - No runtime AI API cost.
 
@@ -40,9 +39,9 @@ Initial pricing hypothesis:
 
 ## Next Build Step
 
-Align acquisition material with the narrowed landing-page offer:
+Prepare a local demo pass with the narrowed landing-page offer:
 
-- Keep the older "confirmation review 980 yen" wording out of the first release.
+- Open `public/index.html` and confirm every demo link reaches `public/app.html`.
 - Keep JPY 1,980 beta/lifetime purchase as the only visible pricing hypothesis.
 - Keep BOOTH out of the first landing page; validate it later with a separate creator-sales page if needed.
 - Keep the demo local and synthetic.

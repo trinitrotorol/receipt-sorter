@@ -146,6 +146,11 @@ button:disabled {
   background: #dfe6d8;
 }
 
+.ghost:disabled {
+  color: #98a2b3;
+  background: #eef1eb;
+}
+
 .primary {
   width: 100%;
   margin-top: 12px;
@@ -316,6 +321,56 @@ input:focus {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 10px;
+}
+
+.save-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfa;
+  padding: 10px;
+}
+
+.save-panel strong,
+.save-panel span {
+  display: block;
+}
+
+.save-panel strong {
+  font-size: 13px;
+}
+
+.save-panel span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.save-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.save-actions button {
+  min-height: 36px;
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+.ghost.danger {
+  color: var(--red);
+  background: var(--rose);
+}
+
+.ghost.danger:hover:not(:disabled) {
+  color: #fff;
+  background: var(--red);
 }
 
 .meta-row label span {
@@ -949,6 +1004,32 @@ input {
   background: #0b5b4a;
 }
 
+.disabled-link,
+.disabled-link:hover {
+  color: #475467;
+  background: #e8ece3;
+  cursor: not-allowed;
+}
+
+.secondary-link {
+  color: var(--ink);
+  background: #e8ece3;
+}
+
+.secondary-link:hover {
+  background: #dfe6d8;
+}
+
+.buy-link {
+  white-space: nowrap;
+}
+
+.price-button {
+  width: 100%;
+  justify-content: center;
+  margin-top: 14px;
+}
+
 .text-link {
   color: var(--green);
 }
@@ -1245,6 +1326,18 @@ input {
 
   .try-own-actions {
     justify-content: stretch;
+  }
+
+  .save-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .save-actions {
+    justify-content: stretch;
+  }
+
+  .save-actions button {
+    flex: 1;
   }
 
   .try-own-actions button {

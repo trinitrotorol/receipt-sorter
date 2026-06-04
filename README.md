@@ -6,22 +6,22 @@ Low-maintenance web app for side-job workers and sole proprietors who need to or
 
 This app does not sell "CSV conversion." It sells relief from a concrete admin chore:
 
-- paste messy expense / income notes
+- paste messy Mercari sales, shipping, fee, and packaging notes
 - get a structured cleanup preview in the browser
-- optionally submit a small review request
-- OpenClaw processes queued requests behind the scenes
+- correct only the rows that need review
+- copy a monthly confirmation checklist and save an export for later accounting work
 
-The first release avoids runtime AI API cost. Browser-side rules do the first pass. OpenClaw can act as the semi-manual backend for small-scale review.
+The first release avoids runtime AI API cost. Browser-side rules do the first pass. Manual/OpenClaw-assisted review is not part of the first public offer.
 
 ## Release Target
 
 Recommended release path:
 
 - Frontend: Cloudflare Pages
-- Backend: Cloudflare Worker
-- Storage: Cloudflare KV or D1
+- Backend: defer until an approved paid review model exists
+- Storage: defer until an approved paid review model exists
 
-This avoids Google Play and Apple App Store review. It also keeps the app separate from the main OpenClaw workspace.
+This avoids Google Play and Apple App Store review. It also keeps the app separate from the main OpenClaw workspace. Worker/KV queue support can wait until there is a clear paid review model.
 
 ## Local Run
 
@@ -50,8 +50,8 @@ This reads `examples/sample-request.json` and writes a structured result to `dat
 ## Safety Model
 
 - Public users never access OpenClaw directly.
-- The Worker stores only submitted request data.
-- OpenClaw pulls pending requests through a narrow API or local export.
+- No OpenClaw review queue is connected in the first public offer.
+- If a review queue is added later, OpenClaw pulls pending requests through a narrow API or local export.
 - OpenClaw does not receive secrets, workspace memory, Discord access, Gmail access, or shell access through the app.
 - No file uploads in the first version.
 - Users are told not to submit personal numbers, card numbers, medical info, payroll data, or confidential client data.
@@ -59,6 +59,6 @@ This reads `examples/sample-request.json` and writes a structured result to `dat
 ## Pricing Hypothesis
 
 - Free browser preview.
-- JPY 980-1,980 per manual/OpenClaw-assisted cleanup review.
-- Later: JPY 3,980/year for saved templates and repeated monthly cleanup.
-
+- JPY 1,980 one-time beta/lifetime purchase for the first public offer.
+- Later: JPY 3,980/year only after repeated monthly cleanup is visible.
+- JPY 980/month or manual review pricing should stay out of the first release until usage and support burden are proven.

@@ -18,6 +18,7 @@
           </div>
         </div>
         <div class="top-actions" aria-label="試用">
+          <span class="button-link buy-link disabled-link" aria-disabled="true">購入準備中</span>
           <button type="button" id="demo-button" class="ghost">サンプルで試す</button>
           <button type="button" id="start-button">販売メモを貼って始める</button>
         </div>
@@ -78,6 +79,17 @@
               <input id="period" type="month" aria-label="対象月">
             </label>
           </div>
+          <div class="save-panel" aria-live="polite">
+            <div>
+              <strong>下書き保存</strong>
+              <span id="save-status">未保存</span>
+            </div>
+            <div class="save-actions">
+              <button type="button" id="save-button" class="ghost">保存</button>
+              <button type="button" id="load-button" class="ghost">復元</button>
+              <button type="button" id="delete-save-button" class="ghost danger">削除</button>
+            </div>
+          </div>
           <button type="button" id="preview-button" class="primary">月次整理する</button>
           <p class="notice">このツールは販売メモの整理補助です。税務相談や申告書作成は行いません。個人番号、カード番号、医療・給与・顧客秘密情報は入力しないでください。</p>
         </aside>
@@ -89,7 +101,7 @@
               <h2 id="dashboard-title">整理結果はここに表示されます</h2>
               <p id="dashboard-copy">販売メモを貼って「月次整理する」を押すと、売上メモ・経費メモ・確認が必要なメモに分けて表示します。</p>
             </div>
-            <span class="price-chip">無料デモ</span>
+            <span class="price-chip">ベータ版 1,980円</span>
           </div>
 
           <div class="empty-guide" id="empty-guide">
@@ -148,14 +160,15 @@
 
       <section class="sales-panel">
         <div>
-          <p class="eyebrow">無料デモ</p>
-          <h2>サンプルだけでなく、手元の販売メモでも試せます。</h2>
-          <p>月次整理、確認リスト、CSV保存を試せます。写真アップロードや外部AI送信はせず、ブラウザ内で整理します。</p>
+          <p class="eyebrow">BETA ACCESS</p>
+          <h2>ベータ版の価格仮説を検証中です。</h2>
+          <p>月次整理、確認リスト、CSV保存を試せます。写真アップロードや外部AI送信はせず、ブラウザ内で整理します。決済リンクはオーナー承認後に接続します。</p>
         </div>
         <div class="price-box">
-          <strong>無料</strong>
-          <span>公開デモ</span>
+          <strong>1,980円</strong>
+          <span>買い切りベータ</span>
           <small>税務相談、節税判断、申告書作成、レシート画像OCRは対象外です。</small>
+          <span class="button-link price-button disabled-link" aria-disabled="true">購入導線は承認待ち</span>
         </div>
       </section>
 
