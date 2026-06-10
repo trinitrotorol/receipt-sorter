@@ -4,6 +4,7 @@ node_modules/
 .env.*
 data/queue/*.json
 data/results/*.json
+private/
+test-results/
 !data/queue/.gitkeep
 !data/results/.gitkeep
-

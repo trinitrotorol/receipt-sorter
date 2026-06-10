@@ -36,8 +36,9 @@ function reviewItem(item) {
 
 function buildActions(request) {
   const actions = [];
-  if (request.totals.unknown > 0) {
-    actions.push(`${request.totals.unknown}件のカテゴリを確認してください。`);
+  const reviewCount = request.totals.review ?? request.totals.unknown ?? 0;
+  if (reviewCount > 0) {
+    actions.push(`${reviewCount}件のカテゴリを確認してください。`);
   }
   if (request.items.some((item) => !item.amount)) {
     actions.push("金額が読み取れない行を修正してください。");
@@ -46,4 +47,3 @@ function buildActions(request) {
   actions.push("会計ソフトへ入れる前に、売上と経費を別シートに分けてください。");
   return actions;
 }
-

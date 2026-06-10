@@ -16,10 +16,10 @@ Operational service inventory for Receipt Sorter.
 
 ## Stripe
 
-- Purpose: payment collection for beta access.
+- Purpose: payment collection for product v1.0 access.
 - Business display name used during setup: `Arrelumen Tools`.
 - Integration type: Payment Links.
-- Product type: one-time beta access.
+- Product type: one-time product v1.0 access.
 - Price: JPY 1,980.
 - Global sales handling: Stripe Managed Payments.
 - Customer information:

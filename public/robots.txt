@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://receipt-sorter.pages.dev/sitemap.xml

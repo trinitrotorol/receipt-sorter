@@ -3,200 +3,219 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>フリマ月次メモ整理 | Receipt Sorter</title>
+    <title>Receipt Sorter | フリマ月末メモを会計入力前に整理</title>
+    <meta name="description" content="メルカリなどのフリマ販売メモ、送料、手数料、梱包材メモを、会計入力前の確認リストに整理するブラウザ内処理のツール。">
+    <link rel="canonical" href="https://receipt-sorter.pages.dev/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Receipt Sorter">
+    <meta property="og:title" content="Receipt Sorter | フリマ月末メモを会計入力前に整理">
+    <meta property="og:description" content="メルカリなどのフリマ販売メモを、会計入力前の確認リストに整理するブラウザツール。">
+    <meta property="og:url" content="https://receipt-sorter.pages.dev/">
+    <meta property="og:image" content="https://receipt-sorter.pages.dev/assets/month-end-desk-900.webp">
+    <meta property="og:image:type" content="image/webp">
+    <meta property="og:image:alt" content="Receipt Sorterの月末メモ整理イメージ">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
     <header class="site-header">
       <div class="site-header-inner">
-        <a class="site-brand" href="./index.html" aria-label="フリマ月次メモ整理">
+        <a class="site-brand" href="./index.html" aria-label="Receipt Sorter">
           <span class="brand-mark compact">RS</span>
-          <span>フリマ月次メモ整理</span>
+          <span>Receipt Sorter</span>
         </a>
         <nav class="site-nav" aria-label="ページ内ナビゲーション">
-          <a href="#what-it-is">できること</a>
-          <a href="#try-flow">試し方</a>
-          <a href="#scope">対象範囲</a>
+          <a href="#flow">使い方</a>
+          <a href="#outputs">整理されるもの</a>
+          <a href="#pricing">料金</a>
         </nav>
-        <a class="button-link header-cta" href="mailto:arrelumen@gmail.com?subject=Receipt%20Sorter%20%E3%83%99%E3%83%BC%E3%82%BF%E8%B3%BC%E5%85%A5%E5%B8%8C%E6%9C%9B">ベータ購入</a>
+        <a class="button-link header-cta" href="./app.html">無料デモ</a>
       </div>
     </header>
 
-    <main class="landing-shell">
-      <header class="landing-hero">
-        <nav class="landing-nav" aria-label="Receipt Sorter">
-          <p class="landing-status">ベータ版提供中</p>
-          <div class="landing-nav-actions">
-            <a class="text-link" href="./app.html">デモを開く</a>
-            <a class="button-link" href="mailto:arrelumen@gmail.com?subject=Receipt%20Sorter%20%E3%83%99%E3%83%BC%E3%82%BF%E8%B3%BC%E5%85%A5%E5%B8%8C%E6%9C%9B">ベータ購入</a>
+    <main class="landing-shell product-landing">
+      <section class="product-hero">
+        <div class="product-hero-copy">
+          <p class="landing-status">無料デモ公開中。製品版 v1.0 販売中</p>
+          <p class="eyebrow">月末メモ整理を、もっと軽く。</p>
+          <h1>メルカリなどのフリマ販売メモを、会計入力前の確認リストに。</h1>
+          <p class="lead">売上・送料・手数料・梱包材・用途不明メモを、ブラウザ内で整理。月末に販売履歴とメモを見比べる時間を、確認すべき行だけに絞ります。</p>
+          <div class="fit-strip" aria-label="向いている人">
+            <span>フリマ販売が月5件以上ある</span>
+            <span>送料や梱包材メモが散らかる</span>
+            <span>会計ソフト入力前に下書きしたい</span>
           </div>
-        </nav>
+          <div class="landing-actions">
+            <a class="button-link" href="./app.html">まずサンプルで試す</a>
+            <a class="button-link secondary-link" href="./checkout.html">購入前の条件を見る</a>
+          </div>
+          <div class="trust-row" aria-label="安心材料">
+            <span>外部AI送信なし</span>
+            <span>アップロード不要</span>
+            <span>要確認を残す</span>
+            <span>確認リスト中心</span>
+          </div>
+          <div class="hero-scope-card" aria-label="Receipt Sorterの役割">
+            <strong>会計入力前のメモ整理ツールです。</strong>
+          </div>
+        </div>
 
-        <section class="landing-hero-grid">
-          <div class="landing-copy">
-            <p class="eyebrow">月10〜50件売るフリマ・小規模販売者向け</p>
-            <h1>月末の販売メモを、確認しやすい月次表に。</h1>
-            <p class="lead">メルカリなどの売上・送料・手数料・梱包材メモを整理。写真アップロードなし。税務判断はせず、迷う行だけ確認できます。</p>
-            <div class="landing-actions">
-              <a class="button-link" href="./app.html">サンプルで整理結果を見る</a>
-              <a class="button-link secondary-link" href="mailto:arrelumen@gmail.com?subject=Receipt%20Sorter%20%E3%83%99%E3%83%BC%E3%82%BF%E8%B3%BC%E5%85%A5%E5%B8%8C%E6%9C%9B">1,980円でベータ購入</a>
+        <div class="product-preview" aria-label="Receipt Sorterの画面プレビュー">
+          <div class="preview-top">
+            <span></span><span></span><span></span>
+            <strong>Before / After</strong>
+          </div>
+          <div class="preview-heading">
+            <small>雑メモを候補リストへ変換</small>
+            <strong>迷う行だけ、要確認に残します。</strong>
+          </div>
+          <div class="preview-grid">
+            <div class="preview-upload">
+              <small>貼り付けメモ</small>
+              <p>6/2 Tシャツ 2,500円</p>
+              <p>送料 210円</p>
+              <p>メルカリ手数料 250円</p>
+              <p>箱 110円</p>
+              <p class="warn">用途不明 680円</p>
             </div>
-            <p class="landing-note">入力不要。30秒で無料デモを確認できます。</p>
-            <p class="landing-note">本ツールはメルカリ公式サービスではありません。</p>
+            <div class="preview-checklist" aria-label="整理後の確認リスト">
+              <div><span>売上候補</span><strong>1件</strong></div>
+              <div><span>送料候補</span><strong>1件</strong></div>
+              <div><span>手数料候補</span><strong>1件</strong></div>
+              <div><span>梱包材候補</span><strong>1件</strong></div>
+              <div class="attention"><span>用途不明</span><strong>1件</strong></div>
+            </div>
           </div>
-
-          <figure class="hero-visual" aria-label="月末の販売メモ整理イメージ">
-            <picture>
-              <source srcset="./assets/month-end-desk-520.webp" media="(max-width: 620px)" type="image/webp">
-              <source srcset="./assets/month-end-desk-900.webp" type="image/webp">
-              <img src="./assets/month-end-desk.png" alt="ノート、電卓、梱包材、販売履歴が並ぶ月末整理の机" width="900" height="520" fetchpriority="high">
-            </picture>
-            <figcaption class="hero-demo-card">
-              <div class="demo-card-head">
-                <span>無料デモで見えること</span>
-                <button type="button" class="demo-toggle" id="hero-demo-toggle" aria-pressed="false">整理結果を見る</button>
-              </div>
-              <div class="demo-flow" id="hero-demo-flow">
-                <div class="demo-pane before is-active" data-demo-pane="before">
-                  <strong>月末に残りがちなメモ</strong>
-                  <span>5/2 売上 2,400円 送料210</span>
-                  <span>5/3 梱包材 110円</span>
-                  <span>5/6 手数料？ 240円</span>
-                  <span>5/9 送料メモなし</span>
-                </div>
-                <div class="demo-pane after" data-demo-pane="after">
-                  <strong>5月の整理結果</strong>
-                  <span><b>売上</b> 2,400円</span>
-                  <span><b>送料</b> 210円</span>
-                  <span><b>梱包材</b> 110円</span>
-                  <span><b>要確認</b> 手数料？ / 送料メモなし</span>
-                </div>
-              </div>
-              <div class="demo-tags" aria-label="デモの範囲">
-                <span>入力不要</span>
-                <span>写真なし</span>
-                <span>迷う行だけ確認</span>
-              </div>
-            </figcaption>
-          </figure>
-
-          <div class="mobile-hero-cta">
-            <a class="button-link" href="./app.html">サンプルで整理結果を見る</a>
-            <p class="landing-note">入力不要。30秒で無料デモを確認できます。</p>
-            <p class="landing-note">本ツールはメルカリ公式サービスではありません。</p>
+          <div class="preview-table">
+            <div class="preview-row head"><span>メモ</span><span>候補</span><span>状態</span></div>
+            <div class="preview-row"><span>Tシャツ 2,500円</span><span>売上</span><em>候補</em></div>
+            <div class="preview-row"><span>送料 210円</span><span>送料</span><em>候補</em></div>
+            <div class="preview-row attention"><span>用途不明 680円</span><span>要確認</span><em>見直し</em></div>
           </div>
-        </section>
-      </header>
-
-      <section class="landing-section" id="what-it-is">
-        <div class="section-head compact">
-          <div>
-            <p class="step-label">WHAT IT IS</p>
-            <h2>完全自動で税務判断する道具ではありません。迷うメモを勝手に処理せず、確認リストに残します。</h2>
+          <div class="preview-actions">
+            <span>確認リスト</span>
+            <span>要確認だけ抽出</span>
+            <span>ブラウザ保存</span>
           </div>
         </div>
-        <div class="value-grid">
+      </section>
+
+      <section class="landing-section" id="flow">
+        <div class="section-head compact">
+          <div>
+            <p class="step-label">HOW IT WORKS</p>
+            <h2>貼る、整理、確認してコピー。</h2>
+          </div>
+        </div>
+        <div class="value-grid flow-grid">
           <article>
-            <strong>フリマ販売メモ用</strong>
-            <p>メルカリなどの売上履歴、送料、販売手数料、梱包材のテキストメモを月ごとに整理します。</p>
+            <strong>1. 貼る</strong>
+            <p>月末メモをそのまま貼り付け。</p>
           </article>
           <article>
-            <strong>迷う行だけ確認</strong>
-            <p>用途が曖昧なメモは「要確認」に出します。誤分類を隠さず、自分で直せます。</p>
+            <strong>2. 整理</strong>
+            <p>候補と要確認に分けます。</p>
           </article>
           <article>
-            <strong>外部AIに投げない</strong>
-            <p>ルールベースで整理します。結果は毎回同じで、ユーザー操作ごとのAI課金もありません。</p>
+            <strong>3. コピー</strong>
+            <p>会計入力前の下書きに。</p>
           </article>
         </div>
       </section>
 
-      <section class="landing-section" id="try-flow">
+      <section class="landing-section use-case-section">
         <div class="section-head compact">
           <div>
-            <p class="step-label">TRY FLOW</p>
-            <h2>最初の30秒はサンプルで確認。その後、自分のメモを貼って使えるか判断できます。</h2>
+            <p class="step-label">USE CASE</p>
+            <h2>月末に残りがちな確認を、先に分けます。</h2>
           </div>
         </div>
-        <div class="value-grid">
+        <div class="use-case-grid">
           <article>
-            <strong>1. サンプルを見る</strong>
-            <p>入力なしで、月末メモがどんな表と確認リストになるか確認できます。</p>
+            <strong>Before</strong>
+            <p>販売履歴、送料メモ、梱包材レシート、用途不明の支出を見ながら、会計入力前に毎回迷う。</p>
           </article>
           <article>
-            <strong>2. 自分のメモを貼る</strong>
-            <p>販売履歴、送料、梱包材メモを貼って、曖昧な行だけ見直します。</p>
-          </article>
-          <article>
-            <strong>3. CSVと確認リストを保存</strong>
-            <p>会計ソフトへ移す前の下書きとして、CSVと確認リストを保存できます。</p>
-          </article>
-        </div>
-        <div class="landing-actions section-actions">
-          <a class="button-link" href="./app.html">無料デモから始める</a>
-        </div>
-      </section>
-
-      <section class="landing-section" id="scope">
-        <div class="section-head compact">
-          <div>
-            <p class="step-label">SCOPE</p>
-            <h2>対応するもの / 対応しないもの</h2>
-          </div>
-        </div>
-        <div class="scope-grid">
-          <article>
-            <strong>対応</strong>
-            <ul>
-              <li>メルカリなどのフリマ販売メモ</li>
-              <li>売上・送料・手数料・梱包材メモ</li>
-              <li>テキスト貼り付け</li>
-              <li>要確認リストとCSV保存</li>
-            </ul>
-          </article>
-          <article>
-            <strong>非対応</strong>
-            <ul>
-              <li>レシート画像OCR</li>
-              <li>税務相談・節税判断</li>
-              <li>確定申告書の作成</li>
-              <li>会計ソフトへの自動連携</li>
-            </ul>
+            <strong>After</strong>
+            <p>売上候補・送料候補・手数料候補・要確認だけに分け、入力前の確認リストとしてコピーする。</p>
           </article>
         </div>
       </section>
 
-      <section class="landing-section split">
-        <div>
-          <p class="step-label">BETA ACCESS</p>
-          <h2>無料デモで確認してから、ベータ版を購入できます。</h2>
-          <p>まずはサンプルで流れを見て、手元の販売メモでも同じように整理できるか確認してください。</p>
+      <section class="landing-section output-section" id="outputs">
+        <div class="section-head compact">
+          <div>
+            <p class="step-label">OUTPUT</p>
+            <h2>ばらばらのメモが、見直しやすい候補に分かれます。</h2>
+          </div>
         </div>
-        <div class="price-box landing-price">
-          <strong>1,980円</strong>
-          <span>買い切りベータ</span>
-          <small>税務判断、節税判断、申告書作成、レシート画像OCRは対象外です。</small>
-          <a class="button-link price-button" href="mailto:arrelumen@gmail.com?subject=Receipt%20Sorter%20%E3%83%99%E3%83%BC%E3%82%BF%E8%B3%BC%E5%85%A5%E5%B8%8C%E6%9C%9B">購入について問い合わせる</a>
+        <div class="output-chip-grid" aria-label="整理される項目">
+          <span>売上候補</span>
+          <span>送料候補</span>
+          <span>手数料候補</span>
+          <span>梱包材候補</span>
+          <span>日付不足</span>
+          <span>金額不足</span>
+          <span>用途不明</span>
+          <span>要確認だけ抽出</span>
         </div>
       </section>
 
-      <section class="landing-section">
+      <section class="landing-section seo-link-section">
         <div class="section-head compact">
           <div>
-            <p class="step-label">LAUNCH TEST</p>
-            <h2>販売メモの月末整理がつらい人向けに、小さく公開中です。</h2>
+            <p class="step-label">GUIDE</p>
+            <h2>月末販売メモの整理方法も確認できます。</h2>
+          </div>
+          <a class="text-link" href="./furima-monthly-memo.html">月末販売メモの整理方法を見る</a>
+        </div>
+      </section>
+
+      <section class="landing-section" id="features">
+        <div class="section-head compact">
+          <div>
+            <p class="step-label">FEATURES</p>
+            <h2>月末に使う機能だけ。</h2>
           </div>
         </div>
-        <div class="target-list">
-          <span>メルカリ副業</span>
-          <span>小規模物販</span>
-          <span>ハンドメイド販売</span>
-          <span>月末の売上メモ整理</span>
-          <span>会計入力前の下書き</span>
+        <div class="feature-grid">
+          <article><strong>メモ分類</strong><p>売上、送料、手数料、梱包材。</p></article>
+          <article><strong>要確認</strong><p>用途不明や不足を残す。</p></article>
+          <article><strong>コピー</strong><p>確認リストをすぐ使える形に。</p></article>
+          <article><strong>外部AI送信なし</strong><p>ブラウザ内で整理。</p></article>
         </div>
-        <p class="landing-note">このツールは販売メモの整理補助です。確定申告や税務判断は、必要に応じて専門家や会計ソフトで確認してください。</p>
+      </section>
+
+      <section class="landing-section" id="pricing">
+        <div class="pricing-layout">
+          <div>
+            <p class="step-label">PRODUCT VERSION</p>
+            <h2>Receipt Sorter 製品版 v1.0 は1,980円（税込）の買い切りです。</h2>
+            <p>会計入力前のメモ整理に必要な機能に絞った、小さいツールです。</p>
+          </div>
+          <div class="price-box landing-price">
+            <strong>1,980円</strong>
+            <span>税込 / サブスクなし / Stripe決済</span>
+            <small>まず無料デモで、手元の月末メモに合うか確認してください。</small>
+            <a class="button-link price-button" href="./checkout.html">購入前の最終確認へ</a>
+          </div>
+        </div>
+        <p class="legal-microcopy">詳細条件と注意事項は、購入前確認ページにまとめています。</p>
+      </section>
+
+      <section class="final-cta">
+        <p class="eyebrow">FREE DEMO</p>
+        <h2>まずはサンプル10行で、整理後の見え方を確認してください。</h2>
+        <a class="button-link" href="./app.html">無料デモを開く</a>
       </section>
     </main>
-    <script src="./landing.js"></script>
+
+    <footer class="site-footer">
+      <a href="./index.html">Receipt Sorter</a>
+      <a href="./app.html">無料デモ</a>
+      <a href="./checkout.html">購入前確認</a>
+      <a href="./legal.html">特定商取引法に基づく表記</a>
+      <a href="./privacy.html">プライバシー</a>
+    </footer>
   </body>
 </html>

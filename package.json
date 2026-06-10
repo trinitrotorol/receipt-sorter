@@ -1,12 +1,19 @@
 {
   "name": "receipt-sorter",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "serve": "npx --yes serve public -l 4173",
+    "check:public": "node scripts/check-public.mjs",
+    "check:public:remote": "node scripts/check-public.mjs https://receipt-sorter.pages.dev",
+    "check:seo": "node scripts/check-seo.mjs",
+    "check:seo:remote": "node scripts/check-seo.mjs https://receipt-sorter.pages.dev",
+    "check:demo": "node scripts/check-demo-output.mjs",
+    "check:sales-ready": "node scripts/check-sales-ready.mjs",
+    "check:seller-info": "node scripts/check-seller-info.mjs",
+    "security:check": "node scripts/security-check.mjs",
     "process:sample": "node scripts/process-local.mjs examples/sample-request.json",
     "process": "node scripts/process-local.mjs"
   }
 }
-
