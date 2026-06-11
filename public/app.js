@@ -810,3 +810,9 @@ render({
 });
 setExportEnabled(false);
 updateSaveStatus();
+
+const params = window.URLSearchParams ? new window.URLSearchParams(window.location.search) : null;
+if (params && (params.get("sample") === "1" || params.get("demo") === "1")) {
+  runDemo();
+  dashboard.scrollIntoView({ behavior: "smooth", block: "start" });
+}
